@@ -2,9 +2,9 @@
 import "./App.css";
 import NavBar from "./NavBar";
 import "./styles.css"; 
-import Home from "./Home";
-import AboutUs from "./AboutUs";
-import ContactUs from "./ContactUs";
+import Home from "./Pages/Home";
+import AboutUs from "./Pages/AboutUs";
+import ContactUs from "./Pages/ContactUs";
 
 function App() {
     let Component = Home;
@@ -20,6 +20,7 @@ function App() {
             break;
         default:
             Component = Home;
+            break;
     }
     return <div>
         <NavBar/>
