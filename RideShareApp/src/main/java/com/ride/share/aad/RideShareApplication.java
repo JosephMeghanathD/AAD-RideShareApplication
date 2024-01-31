@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AadRideShareApplication {
+public class RideShareApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AadRideShareApplication.class, args);
+		SpringApplication.run(RideShareApplication.class, args);
 	}
 
 }
