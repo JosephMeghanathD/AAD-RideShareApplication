@@ -12,11 +12,12 @@ public abstract class AbstractCassandraDAO<T> implements DataAccessObject<T>{
     private final CqlSession cqlSession;
 
     public AbstractCassandraDAO() {
+        CassandraStorageService.init();
         cqlSession = CassandraStorageService.getCqlSession();
     }
 
-    public CqlSession getCqlSession() {
-        return cqlSession;
+    public static CqlSession getCqlSession() {
+        return CassandraStorageService.getCqlSession();
     }
 
     @Override

@@ -15,10 +15,14 @@ public class CassandraStorageService {
     }
 
     public static void init() {
+
         cqlSession = CqlSession.builder().withKeyspace(getKEYSPACE()).build();
     }
 
     public static CqlSession getCqlSession() {
+        if (cqlSession == null) {
+            init();
+        }
         return cqlSession;
     }
 
