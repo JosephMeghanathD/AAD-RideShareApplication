@@ -22,7 +22,8 @@ public abstract class AbstractCassandraDAO<T> implements DataAccessObject<T>{
 
     @Override
     public ResultSet createTable() {
-        return bindAndExecute(new Object[1], getCreateStmt());
+        BoundStatement bind = getCreateStmt().bind();
+        return cqlSession.execute(bind);
     }
 
     private ResultSet bindAndExecute(Object[] values, PreparedStatement createStmt) {

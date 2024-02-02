@@ -8,6 +8,7 @@ import com.ride.share.aad.storage.dao.AbstractCassandraDAO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class User {
 
@@ -53,10 +54,14 @@ public class User {
 
         // Saving the Users object
         user.save();
+
+        for (User users : getAllUsers()) {
+            System.out.println(users);
+        }
     }
 
     public User save() {
-        usersDAO.insert(userId, userId, name, emailId, role, lastSeen);
+        usersDAO.insert(userId, userId, name, emailId, role.toString(), lastSeen);
         return this;
     }
 
@@ -66,7 +71,7 @@ public class User {
     }
 
     public User update() {
-        usersDAO.update(userId, userId, name, emailId, role, lastSeen);
+        usersDAO.update(userId, userId, name, emailId, role.toString(), lastSeen);
         return this;
     }
 
@@ -117,10 +122,13 @@ public class User {
     public static class UsersDAO extends AbstractCassandraDAO<User> {
 
         public static final PreparedStatement CREATE_STMT = getCqlSession().prepare("CREATE TABLE IF NOT EXISTS " + USERS_TABLE + " " + "(userId TEXT PRIMARY KEY, name TEXT, emailId TEXT, role TEXT, lastSeen BIGINT)");
-        public static final PreparedStatement INSERT_STMT = getCqlSession().prepare("INSERT INTO " + USERS_TABLE + " (userId, name, emailId, role, lastSeen) VALUES (?, ?, ?, ?, ?)");
-        public static final PreparedStatement UPDATE_STMT = getCqlSession().prepare("UPDATE " + USERS_TABLE + " SET name = ?, emailId = ?, role = ?, lastSeen = ? WHERE userId = ?");
-        public static final PreparedStatement DELETE_STMT = getCqlSession().prepare("DELETE FROM " + USERS_TABLE + " WHERE userId = ?");
-        public static final PreparedStatement SELECT_STMT = getCqlSession().prepare("SELECT * FROM " + USERS_TABLE + " WHERE userId = ?");
+        public static PreparedStatement INSERT_STMT;
+
+        public static PreparedStatement UPDATE_STMT;
+
+        public static PreparedStatement DELETE_STMT;
+
+        public static PreparedStatement SELECT_STMT;
 
         @Override
         public PreparedStatement getCreateStmt() {
@@ -129,21 +137,33 @@ public class User {
 
         @Override
         public PreparedStatement getInsertStmt() {
+            if (INSERT_STMT == null) {
+                INSERT_STMT = getCqlSession().prepare("INSERT INTO " + USERS_TABLE + " (userId, name, emailId, role, lastSeen) VALUES (?, ?, ?, ?, ?)");
+            }
             return INSERT_STMT;
         }
 
         @Override
         public PreparedStatement getUpdateStmt() {
+            if (UPDATE_STMT == null) {
+                UPDATE_STMT = getCqlSession().prepare("UPDATE " + USERS_TABLE + " SET name = ?, emailId = ?, role = ?, lastSeen = ? WHERE userId = ?");
+            }
             return UPDATE_STMT;
         }
 
         @Override
         public PreparedStatement getDeleteStmt() {
+            if (DELETE_STMT == null) {
+                DELETE_STMT = getCqlSession().prepare("DELETE FROM " + USERS_TABLE + " WHERE userId = ?");
+            }
             return DELETE_STMT;
         }
 
         @Override
         public PreparedStatement getStmt() {
+            if (SELECT_STMT == null) {
+                SELECT_STMT = getCqlSession().prepare("SELECT * FROM " + USERS_TABLE + " WHERE userId = ?");
+            }
             return SELECT_STMT;
         }
 
@@ -177,5 +197,16 @@ public class User {
             });
             return userList;
         }
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", User.class.getSimpleName() + "[", "]")
+                .add("userId='" + userId + "'")
+                .add("name='" + name + "'")
+                .add("emailId='" + emailId + "'")
+                .add("role=" + role)
+                .add("lastSeen=" + lastSeen)
+                .toString();
     }
 }
