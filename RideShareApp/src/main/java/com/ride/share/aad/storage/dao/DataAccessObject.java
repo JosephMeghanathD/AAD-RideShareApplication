@@ -17,5 +17,5 @@ public interface DataAccessObject<T> {
     public ResultSet get(String key);
     public ResultSet update(String key, Object... values);
     public ResultSet delete(String key);
-    public T mapToEntity(String key);
+    public T mapToEntity(String key, T entity);
 }

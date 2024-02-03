@@ -30,34 +30,28 @@ public class User {
         this.usersDAO = new UsersDAO();
     }
 
-    public User(String userId, String name, String emailId, Role role, long lastSeen) {
-        super();
+    public User(String userId) {
+        this();
         this.userId = userId;
-        this.name = name;
-        this.emailId = emailId;
-        this.role = role;
-        this.lastSeen = lastSeen;
+        usersDAO.mapToEntity(userId, this);
+    }
+
+    public User(String userId, String name, String emailId, Role role, long lastSeen) {
+        this();
+        this.userId = userId;
+        assignVariables(this, name, emailId, role, lastSeen);
+    }
+
+    private static void assignVariables(User entity, String name, String emailId, Role role, long lastSeen) {
+        entity.name = name;
+        entity.emailId = emailId;
+        entity.role = role;
+        entity.lastSeen = lastSeen;
     }
 
     public static List<User> getAllUsers() {
         UsersDAO usersDAO = new UsersDAO();
         return usersDAO.getAllUsers();
-    }
-
-    public static void main(String[] args) {
-        User user = new User();
-        user.setUserId("123");
-        user.setName("John Doe");
-        user.setEmailId("john@example.com");
-        user.setRole(User.Role.Rider);
-        user.setLastSeen(System.currentTimeMillis());
-
-        // Saving the Users object
-        user.save();
-
-        for (User users : getAllUsers()) {
-            System.out.println(users);
-        }
     }
 
     public User save() {
@@ -115,7 +109,7 @@ public class User {
         this.lastSeen = lastSeen;
     }
 
-    enum Role {
+    public enum Role {
         Rider, Driver
     }
 
@@ -168,16 +162,15 @@ public class User {
         }
 
         @Override
-        public User mapToEntity(String key) {
+        public User mapToEntity(String key, User user) {
             Row row = get(key).one();
 
             if (row != null) {
-                User user = new User();
+                if (user == null) {
+                    user = new User();
+                }
                 user.userId = row.getString("userId");
-                user.name = row.getString("name");
-                user.emailId = row.getString("emailId");
-                user.role = Role.valueOf(row.getString("role"));
-                user.lastSeen = row.getLong("lastSeen");
+                assignVariables(user, row.getString("name"), row.getString("emailId"), Role.valueOf(row.getString("role")), row.getLong("lastSeen"));
                 return user;
             }
             return null;
@@ -189,10 +182,7 @@ public class User {
             getCqlSession().execute(boundStatement).forEach(row -> {
                 User user = new User();
                 user.userId = row.getString("userId");
-                user.name = row.getString("name");
-                user.emailId = row.getString("emailId");
-                user.role = Role.valueOf(row.getString("role"));
-                user.lastSeen = row.getLong("lastSeen");
+                assignVariables(user, row.getString("name"), row.getString("emailId"), Role.valueOf(row.getString("role")), row.getLong("lastSeen"));
                 userList.add(user);
             });
             return userList;
