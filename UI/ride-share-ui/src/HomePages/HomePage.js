@@ -10,6 +10,12 @@ const HomePageText = () => {
         const response = await axios.get('http://localhost:8080/api/rs/home/text');
         setData(response.data);
       } catch (error) {
+        try {
+          const response = await axios.get('http://localhost:8080/api/rs/public/home/text');
+        setData(response.data);
+        } catch {
+          console.error('Error fetching data:', error);
+        }
         console.error('Error fetching data:', error);
       }
     };

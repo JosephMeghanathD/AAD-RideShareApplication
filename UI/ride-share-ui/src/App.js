@@ -2,9 +2,9 @@
 import "./App.css";
 import NavBar from "./NavBar";
 import "./styles.css"; 
-import Home from "./Pages/Home";
-import AboutUs from "./Pages/AboutUs";
-import ContactUs from "./Pages/ContactUs";
+import Home from "./HomePages/Home";
+import AboutUs from "./TopBarPages/AboutUs";
+import ContactUs from "./TopBarPages/ContactUs";
 
 function App() {
     let Component = Home;
