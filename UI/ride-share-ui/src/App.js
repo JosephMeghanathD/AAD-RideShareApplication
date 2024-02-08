@@ -1,15 +1,15 @@
 
 import "./App.css";
 import NavBar from "./TopBarPages/NavBar";
-import "./styles.css"; 
-import Home from "./HomePages/Home";
+import "./styles.css";
+import Home from "./TopBarPages/HomePages/Home";
 import AboutUs from "./TopBarPages/AboutUs";
 import ContactUs from "./TopBarPages/ContactUs";
-import AuthExtraction from "./AuthPages/AuthExraction";
+import AuthExtraction from "./TopBarPages/AuthPages/AuthExraction";
 
 function App() {
     let Component = Home;
-    switch(window.location.pathname) {
+    switch (window.location.pathname) {
         case "/":
             Component = Home;
             break;
@@ -27,8 +27,8 @@ function App() {
             break;
     }
     return <div>
-        <NavBar/>
-        <Component/>
+        <NavBar />
+        <Component />
     </div>;
 }
 
