@@ -1,4 +1,4 @@
-import "./App.css"
+import "./NavBar.css"
 export default function NavBar() {
     return (
         <nav className="nav">
@@ -10,6 +10,9 @@ export default function NavBar() {
 
                 <li>
                     <a href="/aboutus">About Us</a>
+                </li>
+                <li>
+                    <a href="/login">Log in</a>
                 </li>
             </ul>
         </nav>
