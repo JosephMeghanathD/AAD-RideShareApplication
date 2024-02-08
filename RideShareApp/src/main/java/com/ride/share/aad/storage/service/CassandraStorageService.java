@@ -15,8 +15,9 @@ public class CassandraStorageService {
     }
 
     public static void init() {
-
-        cqlSession = CqlSession.builder().withKeyspace(getKEYSPACE()).build();
+        if (cqlSession == null) {
+            cqlSession = CqlSession.builder().withKeyspace(getKEYSPACE()).build();
+        }
     }
 
     public static CqlSession getCqlSession() {

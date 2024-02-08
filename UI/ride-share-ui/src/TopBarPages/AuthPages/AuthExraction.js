@@ -13,7 +13,7 @@ export default function AuthExtraction() {
     return (
         <div class="center-screen">
             <div class="radio-block">
-                <input id="contrasts-on"
+                <input id="login"
                     type="radio"
                     name="contrasts"
                     value="login"
@@ -21,15 +21,15 @@ export default function AuthExtraction() {
                     onChange={handleOptionChange}
                     defaultChecked
                 />
-                <label for="contrasts-on" >Login</label>
-                <input id="contrasts-off"
+                <label for="login" >Login</label>
+                <input id="signup"
                     type="radio"
-                    name="contrasts" ß
+                    name="contrasts" 
                     value="signup"
                     checked={selectedOption === 'signup'}
                     onChange={handleOptionChange}
                 />
-                <label for="contrasts-off" class="off-label">SignUp</label>
+                <label for="signup" class="off-label">SignUp</label>
                 <span class="selected" aria-hidden="true"></span>
             </div>
             {selectedOption === 'login' && <Login />}

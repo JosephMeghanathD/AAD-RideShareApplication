@@ -36,6 +36,11 @@ legend {
     background-color: #F7F5F3;
     margin-top: 10px;
 }
+.no-border {
+    border: none;
+    margin-top: 0px !important;
+    margin-bottom: 10px;
+}
 
 .selected {
     position: absolute;
@@ -56,6 +61,7 @@ label {
     transition: color 0.2s;
     text-align: center;
     cursor: pointer;
+    color: black;
 }
 
 input[type=radio]:checked+label {
@@ -100,6 +106,16 @@ input {
     border: none;
     border-radius: 3px;
 }
+div.role {
+     width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    border: none;
+    border-radius: 3px;
+    color: black;
+    display: flex;
+}
+
 
 input:focus {
     outline: none;

@@ -5,6 +5,8 @@ import com.datastax.oss.driver.api.core.cql.BoundStatement;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.ride.share.aad.storage.dao.AbstractCassandraDAO;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +55,30 @@ public class User {
         UsersDAO usersDAO = new UsersDAO();
         return usersDAO.getAllUsers();
     }
+
+    public static User getUser(JSONObject userJson) throws Exception {
+        String userId = userJson.getString("userId");
+        User existingUser = new User(userId);
+        if (existingUser.role != null) {
+            throw new Exception("User ID " + userId + " already exists");
+        }
+        return new User(userId,
+                userJson.getString("name"),
+                userJson.getString("emailId"),
+                Role.valueOf(userJson.getString("role")),
+                System.currentTimeMillis()/1000);
+    }
+
+    public JSONObject toJson() throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put("userId", this.userId);
+        json.put("name", this.name);
+        json.put("emailId", this.emailId);
+        json.put("role", this.role.toString());
+        json.put("lastSeen", this.lastSeen);
+        return json;
+    }
+
 
     public User save() {
         usersDAO.insert(userId, userId, name, emailId, role.toString(), lastSeen);
