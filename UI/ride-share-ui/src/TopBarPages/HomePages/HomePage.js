@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import ErrorToast from '../../BasicElements/ErrorToast';
 
 const HomePageText = () => {
   const [data, setData] = useState(null);
 
+  const [errorMessage, setErrorMessage] = useState('');
+
   useEffect(() => {
     const fetchData = async () => {
+      
       try {
         const response = await axios.get('http://localhost:8080/api/rs/home/text', {
           headers: {
@@ -14,10 +18,8 @@ const HomePageText = () => {
         });
         setData(response.data);
       } catch (error) {
-        if (error.response.status === 401) {
-          window.location.href = "./login";
-        }
         try {
+          setErrorMessage("You are viewing public data, login to unlock more features.")
           const response = await axios.get('http://localhost:8080/api/rs/public/home/text');
         setData(response.data);
         } catch {
@@ -37,6 +39,7 @@ const HomePageText = () => {
           <pre>{data}</pre>
         </div>
       )}
+      {errorMessage && <ErrorToast message={errorMessage} />}
     </div>
   );
 };
