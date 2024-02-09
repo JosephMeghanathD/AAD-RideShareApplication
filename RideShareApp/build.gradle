@@ -16,8 +16,7 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.json:json:20210307'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.json:json:20231013'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'io.jsonwebtoken:jjwt:0.12.4'

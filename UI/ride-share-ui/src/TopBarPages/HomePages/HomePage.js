@@ -7,9 +7,16 @@ const HomePageText = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/rs/home/text');
+        const response = await axios.get('http://localhost:8080/api/rs/home/text', {
+          headers: {
+            'Authorization': localStorage.getItem("jwtToken")
+          }
+        });
         setData(response.data);
       } catch (error) {
+        if (error.response.status === 401) {
+          window.location.href = "./login";
+        }
         try {
           const response = await axios.get('http://localhost:8080/api/rs/public/home/text');
         setData(response.data);

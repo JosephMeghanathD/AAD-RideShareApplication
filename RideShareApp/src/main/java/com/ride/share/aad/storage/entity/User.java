@@ -25,6 +25,7 @@ public class User {
     private String userId;
     private String name;
     private String emailId;
+    private String password;
     private Role role;
     private long lastSeen;
 
@@ -38,17 +39,19 @@ public class User {
         usersDAO.mapToEntity(userId, this);
     }
 
-    public User(String userId, String name, String emailId, Role role, long lastSeen) {
+    public User(String userId, String name, String emailId, Role role, long lastSeen, String password) {
         this();
         this.userId = userId;
-        assignVariables(this, name, emailId, role, lastSeen);
+        assignVariables(this, name, emailId, role, lastSeen, password);
     }
 
-    private static void assignVariables(User entity, String name, String emailId, Role role, long lastSeen) {
+    private static void assignVariables(User entity, String name, String emailId,
+                                        Role role, long lastSeen, String password) {
         entity.name = name;
         entity.emailId = emailId;
         entity.role = role;
         entity.lastSeen = lastSeen;
+        entity.password = password;
     }
 
     public static List<User> getAllUsers() {
@@ -66,7 +69,7 @@ public class User {
                 userJson.getString("name"),
                 userJson.getString("emailId"),
                 Role.valueOf(userJson.getString("role")),
-                System.currentTimeMillis()/1000);
+                System.currentTimeMillis() / 1000, userJson.getString("password"));
     }
 
     public JSONObject toJson() throws JSONException {
@@ -81,7 +84,7 @@ public class User {
 
 
     public User save() {
-        usersDAO.insert(userId, userId, name, emailId, role.toString(), lastSeen);
+        usersDAO.insert(userId, userId, name, emailId, role.toString(), lastSeen, password);
         return this;
     }
 
@@ -91,7 +94,7 @@ public class User {
     }
 
     public User update() {
-        usersDAO.update(userId, userId, name, emailId, role.toString(), lastSeen);
+        usersDAO.update(userId, userId, name, emailId, role.toString(), lastSeen, password);
         return this;
     }
 
@@ -135,13 +138,37 @@ public class User {
         this.lastSeen = lastSeen;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean validate(String password) {
+        return password.equals(this.password);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", User.class.getSimpleName() + "[", "]")
+                .add("userId='" + userId + "'")
+                .add("name='" + name + "'")
+                .add("emailId='" + emailId + "'")
+                .add("role=" + role)
+                .add("lastSeen=" + lastSeen)
+                .toString();
+    }
+
     public enum Role {
         Rider, Driver
     }
 
     public static class UsersDAO extends AbstractCassandraDAO<User> {
 
-        public static final PreparedStatement CREATE_STMT = getCqlSession().prepare("CREATE TABLE IF NOT EXISTS " + USERS_TABLE + " " + "(userId TEXT PRIMARY KEY, name TEXT, emailId TEXT, role TEXT, lastSeen BIGINT)");
+        public static final PreparedStatement CREATE_STMT = getCqlSession().prepare("CREATE TABLE IF NOT EXISTS " +
+                USERS_TABLE + " " + "(userId TEXT PRIMARY KEY, name TEXT, emailId TEXT, role TEXT, lastSeen BIGINT, password TEXT)");
         public static PreparedStatement INSERT_STMT;
 
         public static PreparedStatement UPDATE_STMT;
@@ -158,7 +185,8 @@ public class User {
         @Override
         public PreparedStatement getInsertStmt() {
             if (INSERT_STMT == null) {
-                INSERT_STMT = getCqlSession().prepare("INSERT INTO " + USERS_TABLE + " (userId, name, emailId, role, lastSeen) VALUES (?, ?, ?, ?, ?)");
+                INSERT_STMT = getCqlSession().prepare("INSERT INTO " + USERS_TABLE
+                        + " (userId, name, emailId, role, lastSeen, password) VALUES (?, ?, ?, ?, ?, ?)");
             }
             return INSERT_STMT;
         }
@@ -166,7 +194,8 @@ public class User {
         @Override
         public PreparedStatement getUpdateStmt() {
             if (UPDATE_STMT == null) {
-                UPDATE_STMT = getCqlSession().prepare("UPDATE " + USERS_TABLE + " SET name = ?, emailId = ?, role = ?, lastSeen = ? WHERE userId = ?");
+                UPDATE_STMT = getCqlSession().prepare("UPDATE " + USERS_TABLE
+                        + " SET name = ?, emailId = ?, role = ?, lastSeen = ?, password = ? WHERE userId = ?");
             }
             return UPDATE_STMT;
         }
@@ -196,7 +225,9 @@ public class User {
                     user = new User();
                 }
                 user.userId = row.getString("userId");
-                assignVariables(user, row.getString("name"), row.getString("emailId"), Role.valueOf(row.getString("role")), row.getLong("lastSeen"));
+                assignVariables(user, row.getString("name"), row.getString("emailId"),
+                        Role.valueOf(row.getString("role")), row.getLong("lastSeen"),
+                        row.getString("password"));
                 return user;
             }
             return null;
@@ -208,21 +239,12 @@ public class User {
             getCqlSession().execute(boundStatement).forEach(row -> {
                 User user = new User();
                 user.userId = row.getString("userId");
-                assignVariables(user, row.getString("name"), row.getString("emailId"), Role.valueOf(row.getString("role")), row.getLong("lastSeen"));
+                assignVariables(user, row.getString("name"), row.getString("emailId"),
+                        Role.valueOf(row.getString("role")), row.getLong("lastSeen"),
+                        "HIDDEN");
                 userList.add(user);
             });
             return userList;
         }
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", User.class.getSimpleName() + "[", "]")
-                .add("userId='" + userId + "'")
-                .add("name='" + name + "'")
-                .add("emailId='" + emailId + "'")
-                .add("role=" + role)
-                .add("lastSeen=" + lastSeen)
-                .toString();
     }
 }

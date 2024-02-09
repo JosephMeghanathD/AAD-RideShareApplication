@@ -23,11 +23,15 @@ public abstract class AbstractCassandraDAO<T> implements DataAccessObject<T>{
     @Override
     public ResultSet createTable() {
         BoundStatement bind = getCreateStmt().bind();
-        return cqlSession.execute(bind);
+        return executeStatement(bind);
     }
 
     private ResultSet bindAndExecute(Object[] values, PreparedStatement createStmt) {
         BoundStatement bind = createStmt.bind(values);
+        return executeStatement(bind);
+    }
+
+    private ResultSet executeStatement(BoundStatement bind) {
         return cqlSession.execute(bind);
     }
 
@@ -49,5 +53,10 @@ public abstract class AbstractCassandraDAO<T> implements DataAccessObject<T>{
     @Override
     public ResultSet delete(String key) {
         return bindAndExecute(new String[]{key}, getDeleteStmt());
+    }
+
+    @Override
+    public ResultSet query(BoundStatement statement) {
+        return executeStatement(statement);
     }
 }

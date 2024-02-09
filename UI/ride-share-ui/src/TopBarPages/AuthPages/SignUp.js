@@ -10,6 +10,7 @@ const Signup = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleSignup = (e) => {
+    e.preventDefault();
     const signUpReq = async () => {
       try {
         const response = await axios.post('http://localhost:8080/api/rs/public/signUp', {
@@ -19,7 +20,8 @@ const Signup = () => {
           name,
           role
         });
-        console.log(response)
+        console.log(response);
+        window.location.href = "./login?username=" + userId;
       } catch (error) {
         console.error('Error fetching data:', error);
         setErrorMessage(error.response.data.body.detail);
@@ -65,6 +67,7 @@ const Signup = () => {
             name="contrasts"
             value="Driver"
             checked={role === 'Driver'}
+            pattern='[+]'
             onChange={() => setRole('Driver')}
           />
           <label for="Driver" class="off-label">Driver</label>

@@ -11,11 +11,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
-import java.util.concurrent.TimeUnit;
 
 public class Token {
 
     public static final String TOKENS_TABLE = "tokens";
+    public static final String TOKEN_TTL = "3600";
 
     static {
         TokensDAO tokensDAO = new TokensDAO();
@@ -25,25 +25,22 @@ public class Token {
     transient TokensDAO tokensDAO;
     private String userId;
     private String jwtToken;
-    private UserRole userRole;
-    private long expirationTime; // Expiration time in milliseconds
-
+    private UserRole userRole = null;
     public Token() {
         this.tokensDAO = new TokensDAO();
     }
 
-    public Token(String userId) {
+    public Token(String token) {
         this();
-        this.userId = userId;
-        tokensDAO.mapToEntity(userId, this);
+        this.jwtToken = token;
+        tokensDAO.mapToEntity(token, this);
     }
 
-    public Token(String userId, String jwtToken, UserRole userRole, long expirationTime) {
+    public Token(String userId, String jwtToken, UserRole userRole) {
         this();
         this.userId = userId;
         this.jwtToken = jwtToken;
         this.userRole = userRole;
-        this.expirationTime = expirationTime;
     }
 
     public static List<Token> getAllTokens() {
@@ -51,30 +48,21 @@ public class Token {
         return tokensDAO.getAllTokens();
     }
 
-    public static Token getToken(JSONObject tokenJson) throws Exception {
-        String userId = tokenJson.getString("userId");
-        return new Token(userId,
-                tokenJson.getString("jwtToken"),
-                UserRole.valueOf(tokenJson.getString("userRole")),
-                System.currentTimeMillis() + TimeUnit.HOURS.toMillis(3)); // Expiration time set to 3 hours from now
-    }
-
     public JSONObject toJson() throws JSONException {
         JSONObject json = new JSONObject();
         json.put("userId", this.userId);
         json.put("jwtToken", this.jwtToken);
         json.put("userRole", this.userRole.toString());
-        json.put("expirationTime", this.expirationTime);
         return json;
     }
 
     public Token save() {
-        tokensDAO.insert(userId, jwtToken, userRole.toString(), expirationTime);
+        tokensDAO.insert(jwtToken, jwtToken, userId, userRole.toString());
         return this;
     }
 
     public Token delete() {
-        tokensDAO.delete(userId);
+        tokensDAO.delete(jwtToken);
         return this;
     }
 
@@ -102,21 +90,13 @@ public class Token {
         this.userRole = userRole;
     }
 
-    public long getExpirationTime() {
-        return expirationTime;
-    }
-
-    public void setExpirationTime(long expirationTime) {
-        this.expirationTime = expirationTime;
-    }
-
     public enum UserRole {
         Admin, User
     }
 
     public static class TokensDAO extends AbstractCassandraDAO<Token> {
 
-        public static final PreparedStatement CREATE_STMT = getCqlSession().prepare("CREATE TABLE IF NOT EXISTS " + TOKENS_TABLE + " " + "(userId TEXT PRIMARY KEY, jwtToken TEXT, userRole TEXT, expirationTime BIGINT)");
+        public static final PreparedStatement CREATE_STMT = getCqlSession().prepare("CREATE TABLE IF NOT EXISTS " + TOKENS_TABLE + " " + "(userId TEXT, jwtToken TEXT PRIMARY KEY, userRole TEXT)");
 
         public static PreparedStatement INSERT_STMT;
 
@@ -132,7 +112,8 @@ public class Token {
         @Override
         public PreparedStatement getInsertStmt() {
             if (INSERT_STMT == null) {
-                INSERT_STMT = getCqlSession().prepare("INSERT INTO " + TOKENS_TABLE + " (userId, jwtToken, userRole, expirationTime) VALUES (?, ?, ?, ?)");
+                INSERT_STMT = getCqlSession().prepare("INSERT INTO " + TOKENS_TABLE +
+                        " (jwtToken, userId, userRole) VALUES (?, ?, ?) USING TTL " + TOKEN_TTL);
             }
             return INSERT_STMT;
         }
@@ -145,7 +126,7 @@ public class Token {
         @Override
         public PreparedStatement getDeleteStmt() {
             if (DELETE_STMT == null) {
-                DELETE_STMT = getCqlSession().prepare("DELETE FROM " + TOKENS_TABLE + " WHERE userId = ?");
+                DELETE_STMT = getCqlSession().prepare("DELETE FROM " + TOKENS_TABLE + " WHERE jwtToken = ?");
             }
             return DELETE_STMT;
         }
@@ -153,7 +134,7 @@ public class Token {
         @Override
         public PreparedStatement getStmt() {
             if (SELECT_STMT == null) {
-                SELECT_STMT = getCqlSession().prepare("SELECT * FROM " + TOKENS_TABLE + " WHERE userId = ?");
+                SELECT_STMT = getCqlSession().prepare("SELECT * FROM " + TOKENS_TABLE + " WHERE jwtToken = ?");
             }
             return SELECT_STMT;
         }
@@ -170,7 +151,6 @@ public class Token {
                     token.userId = row.getString("userId");
                     token.jwtToken = row.getString("jwtToken");
                     token.userRole = UserRole.valueOf(row.getString("userRole"));
-                    token.expirationTime = row.getLong("expirationTime");
                     return token;
                 }
             }
@@ -185,7 +165,6 @@ public class Token {
                 token.userId = row.getString("userId");
                 token.jwtToken = row.getString("jwtToken");
                 token.userRole = UserRole.valueOf(row.getString("userRole"));
-                token.expirationTime = row.getLong("expirationTime");
                 tokenList.add(token);
             });
             return tokenList;
@@ -198,7 +177,6 @@ public class Token {
                 .add("userId='" + userId + "'")
                 .add("jwtToken='" + jwtToken + "'")
                 .add("userRole=" + userRole)
-                .add("expirationTime=" + expirationTime)
                 .toString();
     }
 }

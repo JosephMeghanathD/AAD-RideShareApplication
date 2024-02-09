@@ -1,5 +1,10 @@
 package com.ride.share.aad.controllers;
 
+import com.ride.share.aad.config.scurity.InvalidAuthRequest;
+import com.ride.share.aad.config.scurity.RequestAuthHelper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -9,7 +14,10 @@ public class RideShareBasicController {
 
     @GetMapping("/home/text")
     @ResponseBody
-    public String homeText() {
+    public String homeText(@RequestHeader("Authorization") String authorizationHeader) throws InvalidAuthRequest {
+        if (!RequestAuthHelper.isValidToken(authorizationHeader)) {
+            throw new InvalidAuthRequest("Need to login before getting data");
+        }
         return "This is RideShare Home, Welcome";
     }
 
@@ -17,5 +25,11 @@ public class RideShareBasicController {
     @ResponseBody
     public String publicHomeText() {
         return "This is RideShare Home, Public";
+    }
+
+    @ExceptionHandler(InvalidAuthRequest.class)
+    public ResponseEntity<ErrorResponse> handleAuthException(Exception ex) {
+        ErrorResponse errorResponse = ErrorResponse.builder(ex, HttpStatus.UNAUTHORIZED, ex.getMessage()).build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 }

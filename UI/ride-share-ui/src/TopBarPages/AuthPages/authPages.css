@@ -144,6 +144,10 @@ button {
     transition: color 0.5s;
 }
 
+button.no-radius {
+    border-radius: 0px;
+}
+
 button:hover {
     background-color: #ddd;
     color: black;
