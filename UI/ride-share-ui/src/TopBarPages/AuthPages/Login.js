@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import Spinner from '../../BasicElements/Spinner';
+import ErrorToast from '../../BasicElements/ErrorToast';
 
 const Login = () => {
   const searchParams = new URLSearchParams(window.location.search);
@@ -17,8 +18,8 @@ const Login = () => {
     setLoading(true);
 
     const loginReq = async () => {
+      setErrorMessage(null);
       try {
-        setTimeout(() => { window.location.href = "./home"; }, 5000);
         const response = await axios.post('http://localhost:8080/api/rs/public/login', {
           username,
           password
@@ -37,7 +38,6 @@ const Login = () => {
 
   return (
     <div className="auth-container">
-      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
       <form onSubmit={handleLogin}>
         <input
           type="text"
@@ -52,6 +52,7 @@ const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         {loading ? <Spinner /> : <button type="submit">Login</button>}
+        {errorMessage && <ErrorToast message={errorMessage} />}
       </form>
     </div>
   );

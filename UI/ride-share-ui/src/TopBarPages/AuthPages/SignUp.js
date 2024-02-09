@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import Spinner from '../../BasicElements/Spinner';
+import ErrorToast from '../../BasicElements/ErrorToast';
 
 const Signup = () => {
   const [userId, setUserId] = useState('');
@@ -17,6 +18,7 @@ const Signup = () => {
     setLoading(true);
 
     const signUpReq = async () => {
+      setErrorMessage(null);
       try {
         const response = await axios.post('http://localhost:8080/api/rs/public/signUp', {
           userId,
@@ -30,6 +32,7 @@ const Signup = () => {
       } catch (error) {
         console.error('Error fetching data:', error);
         setErrorMessage(error.response.data.body.detail);
+        setLoading(false);
       }
     };
 
@@ -37,7 +40,6 @@ const Signup = () => {
   };
   return (
     <div className="auth-container">
-      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
       <form onSubmit={handleSignup}>
         <input
           type="text"
@@ -85,6 +87,7 @@ const Signup = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         {loading ? <Spinner /> : <button type="submit">Signup</button>}
+        {errorMessage && <ErrorToast message={errorMessage} />}
       </form>
     </div>
   );

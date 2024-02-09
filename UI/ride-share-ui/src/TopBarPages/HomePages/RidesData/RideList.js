@@ -56,7 +56,6 @@ const RideList = ({ rides }) => {
 
   return (
     <div className="ride-list-container">
-      {error && <ErrorToast message={error} />}
       <table className="ride-list-table">
         <thead>
           <tr>
@@ -92,6 +91,7 @@ const RideList = ({ rides }) => {
         <button onClick={() => handlePageChange(Math.ceil(sortedRides.length / ridesPerPage))}>Last</button>
 
       </div>
+      {error && <ErrorToast message={error} />}
     </div>
   );
 };
