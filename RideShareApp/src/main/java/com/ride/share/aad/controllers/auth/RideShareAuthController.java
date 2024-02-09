@@ -25,7 +25,6 @@ public class RideShareAuthController {
             return RequestAuthHelper.login(new JSONObject(userDataString), role);
         } catch (Exception e) {
             logger.error("Failed to login", e);
-            e.printStackTrace();
             throw e;
         }
     }
