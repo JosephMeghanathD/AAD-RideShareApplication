@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import Spinner from '../../BasicElements/Spinner';
 
 const Signup = () => {
   const [userId, setUserId] = useState('');
@@ -8,9 +9,13 @@ const Signup = () => {
   const [role, setRole] = useState('Rider');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+
 
   const handleSignup = (e) => {
     e.preventDefault();
+    setLoading(true);
+
     const signUpReq = async () => {
       try {
         const response = await axios.post('http://localhost:8080/api/rs/public/signUp', {
@@ -79,7 +84,7 @@ const Signup = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit">Signup</button>
+        {loading ? <Spinner /> : <button type="submit">Signup</button>}
       </form>
     </div>
   );

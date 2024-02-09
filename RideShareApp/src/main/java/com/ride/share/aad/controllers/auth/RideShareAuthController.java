@@ -21,12 +21,7 @@ public class RideShareAuthController {
     @PostMapping("/login")
     @ResponseBody
     public String logIn(@RequestBody String userDataString, @RequestParam(value = "role", defaultValue = "User") String role) throws Exception {
-        try {
-            return RequestAuthHelper.login(new JSONObject(userDataString), role);
-        } catch (Exception e) {
-            logger.error("Failed to login", e);
-            throw e;
-        }
+        return RequestAuthHelper.login(new JSONObject(userDataString), role);
     }
 
     @PostMapping("/signUp")

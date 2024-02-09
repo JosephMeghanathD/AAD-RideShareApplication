@@ -27,6 +27,14 @@ public class RideShareBasicController {
         return "This is RideShare Home, Public";
     }
 
+    @GetMapping("/text")
+    public String getRides(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "timeOfRide") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortOrder
+    ) {
+        return "";
+    }
     @ExceptionHandler(InvalidAuthRequest.class)
     public ResponseEntity<ErrorResponse> handleAuthException(Exception ex) {
         ErrorResponse errorResponse = ErrorResponse.builder(ex, HttpStatus.UNAUTHORIZED, ex.getMessage()).build();

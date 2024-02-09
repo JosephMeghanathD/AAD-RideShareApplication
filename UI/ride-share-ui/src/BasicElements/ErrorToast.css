@@ -1,0 +1,28 @@
+.error-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: red;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 100px;
+    box-shadow: 0px 25px 15px rgba(113, 12, 12, 0.2);
+    display: flex;
+    align-items: center;
+  }
+  
+  .message {
+    flex-grow: 1;
+  }
+  
+  .close-button {
+    width: 15%;
+    background-color: transparent;
+    border: none;
+    color: #FFF;
+    cursor: pointer;
+    font-size: 20px;
+    margin-left: 1px;
+    border-radius: 25%;
+  }
+  

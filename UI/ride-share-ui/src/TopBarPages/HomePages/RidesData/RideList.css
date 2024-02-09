@@ -1,0 +1,54 @@
+.ride-list-container {
+  font-family: Arial, sans-serif;
+}
+
+.ride-list-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.ride-list-table th,
+.ride-list-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.ride-list-table th {
+  background-color: black;
+  color: white;
+  cursor: pointer;
+}
+
+.ride-list-table th:hover {
+  background-color: #ddd;
+}
+
+.pagination {
+  margin-top: 20px;
+  display: flex;
+}
+
+.pagination button {
+  background-color: #f2f2f2;
+  border: none;
+  color: black;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.pagination button:hover:not(.current-page) {
+  background-color: #ddd;
+}
+
+.page-numbers {
+  display: inline-block;
+}
+
+.current-page {
+  background-color: #ddd;
+}

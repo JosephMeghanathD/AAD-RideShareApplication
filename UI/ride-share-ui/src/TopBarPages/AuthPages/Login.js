@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import Spinner from '../../BasicElements/Spinner';
 
 const Login = () => {
   const searchParams = new URLSearchParams(window.location.search);
@@ -8,11 +9,16 @@ const Login = () => {
   const [password, setPassword] = useState('');
 
   const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+
 
   const handleLogin = (e) => {
     e.preventDefault();
+    setLoading(true);
+
     const loginReq = async () => {
       try {
+        setTimeout(() => { window.location.href = "./home"; }, 5000);
         const response = await axios.post('http://localhost:8080/api/rs/public/login', {
           username,
           password
@@ -23,9 +29,9 @@ const Login = () => {
       } catch (error) {
         console.error('Error fetching data:', error);
         setErrorMessage(error.response.data.body.detail);
+        setLoading(false);
       }
     };
-
     loginReq();
   };
 
@@ -45,7 +51,7 @@ const Login = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit">Login</button>
+        {loading ? <Spinner /> : <button type="submit">Login</button>}
       </form>
     </div>
   );
