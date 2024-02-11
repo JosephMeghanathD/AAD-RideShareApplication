@@ -18,6 +18,9 @@ const HomePageText = () => {
         });
         setData(response.data);
       } catch (error) {
+        if (error.response.status === 401) {
+          localStorage.removeItem("jwtToken");
+        }
         try {
           setErrorMessage("You are viewing public data, login to unlock more features.")
           const response = await axios.get('http://localhost:8080/api/rs/public/home/text');

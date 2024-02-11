@@ -1,17 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './RideList.css';
 import ErrorToast from '../../../BasicElements/ErrorToast';
+import axios from 'axios';
 
 const ridesPerPage = 10;
 
 
-const RideList = ({ rides }) => {
+const RideList = () => {
   const [sortBy, setSortBy] = useState('postedAt');
   const [sortOrder, setSortOrder] = useState('asc');
   const [currentPage, setCurrentPage] = useState(1);
 
   const [error, setError] = useState(null);
+  
+  const [data, setData] = useState({rides:[]});
+  useEffect(() => {
+    const fetchData = async () => {
+      
+      try {
+        const response = await axios.get('http://localhost:8080/api/rs/rides', {
+          headers: {
+            'Authorization': localStorage.getItem("jwtToken")
+          }
+        });
+        setData(response.data);
+      } catch (error) {
+        console.error('Error fetching rides data:', error);
+      }
+    };
 
+    fetchData();
+  }, []);
 
   const handleSort = (key) => {
     if (sortBy === key) {
@@ -35,7 +54,7 @@ const RideList = ({ rides }) => {
     setCurrentPage(pageNumber);
   };
 
-  const sortedRides = [...rides].sort((a, b) => {
+  const sortedRides = [...data.rides].sort((a, b) => {
     const valueA = typeof a[sortBy] === 'string' ? a[sortBy].toLowerCase() : a[sortBy];
     const valueB = typeof b[sortBy] === 'string' ? b[sortBy].toLowerCase() : b[sortBy];
 
@@ -62,7 +81,7 @@ const RideList = ({ rides }) => {
             <th onClick={() => handleSort('startingFromLocation')}> Starting From Location {sortBy === 'startingFromLocation' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
             <th onClick={() => handleSort('destination')}>Destination {sortBy === 'destination' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
             <th onClick={() => handleSort('numberOfPeople')}>Number of People {sortBy === 'numberOfPeople' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
-            <th onClick={() => handleSort('fare')}>Fare {sortBy === 'fare' && (sortOrder === 'fare' ? '▲' : '▼')}</th>
+            <th onClick={() => handleSort('fare')}>Fare {sortBy === 'fare' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
             <th onClick={() => handleSort('timeOfRide')}>Time of Ride {sortBy === 'timeOfRide' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
             <th onClick={() => handleSort('postedBy')}>Posted By {sortBy === 'postedBy' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
             <th onClick={() => handleSort('postedAt')}>Posted At {sortBy === 'postedAt' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
@@ -76,10 +95,10 @@ const RideList = ({ rides }) => {
               <td>{ride.destination}</td>
               <td>{ride.numberOfPeople}</td>
               <td>{ride.fare}</td>
-              <td>{new Date(ride.timeOfRide * 1000).toLocaleString()}</td>
+              <td>{new Date(ride.timeOfRide).toLocaleString()}</td>
               <td>{ride.postedBy}</td>
-              <td>{new Date(ride.postedAt * 1000).toLocaleString()}</td>
-              {localStorage.getItem('jwtToken') !== null && <td>{ride.postedBy.startsWith('user') && (<button onClick={() => window.location.href = `/chat?${ride.postedBy}`}>Chat</button>)}</td>}
+              <td>{new Date(ride.postedAt).toLocaleString()}</td>
+              {localStorage.getItem('jwtToken') !== null && <td><button onClick={() => window.location.href = `/chat?${ride.postedBy}`}>Chat</button></td>}
             </tr>
           ))}
         </tbody>

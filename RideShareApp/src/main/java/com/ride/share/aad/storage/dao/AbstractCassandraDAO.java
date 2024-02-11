@@ -7,7 +7,7 @@ import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.ride.share.aad.storage.service.CassandraStorageService;
 
 
-public abstract class AbstractCassandraDAO<T> implements DataAccessObject<T>{
+public abstract class AbstractCassandraDAO<T> implements DataAccessObject<T> {
 
     private final CqlSession cqlSession;
 

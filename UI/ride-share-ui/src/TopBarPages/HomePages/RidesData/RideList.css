@@ -15,6 +15,10 @@
   text-align: left;
 }
 
+.ride-list-table td {
+  font-family: monospace, monospace;
+}
+
 .ride-list-table th {
   background-color: black;
   color: white;

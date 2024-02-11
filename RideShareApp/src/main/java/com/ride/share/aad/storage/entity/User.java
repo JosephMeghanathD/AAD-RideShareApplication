@@ -15,6 +15,7 @@ import java.util.StringJoiner;
 public class User {
 
     public static final String USERS_TABLE = "users";
+    public static boolean DEV = false;
 
     static {
         UsersDAO usersDAO = new UsersDAO();
@@ -158,6 +159,7 @@ public class User {
                 .add("emailId='" + emailId + "'")
                 .add("role=" + role)
                 .add("lastSeen=" + lastSeen)
+                .add("password=" + (DEV ? password : "HIDDEN(enable DEV)"))
                 .toString();
     }
 
@@ -233,7 +235,7 @@ public class User {
             return null;
         }
 
-        public List<User> getAllUsers() {
+        public static List<User> getAllUsers() {
             List<User> userList = new ArrayList<>();
             BoundStatement boundStatement = getCqlSession().prepare("SELECT * FROM " + USERS_TABLE).bind();
             getCqlSession().execute(boundStatement).forEach(row -> {
