@@ -1,4 +1,4 @@
-package com.ride.share.aad.util.generators;
+package com.ride.share.util.generators;
 
 import com.github.javafaker.Faker;
 import com.ride.share.aad.storage.entity.Ride;

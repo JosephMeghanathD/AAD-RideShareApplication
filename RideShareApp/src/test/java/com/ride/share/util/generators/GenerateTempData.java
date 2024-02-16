@@ -1,4 +1,4 @@
-package com.ride.share.aad.util.generators;
+package com.ride.share.util.generators;
 
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.BoundStatement;

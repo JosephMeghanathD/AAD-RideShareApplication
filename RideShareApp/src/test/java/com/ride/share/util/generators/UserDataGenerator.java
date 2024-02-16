@@ -1,4 +1,4 @@
-package com.ride.share.aad.util.generators;
+package com.ride.share.util.generators;
 
 import com.github.javafaker.Faker;
 import com.ride.share.aad.storage.entity.User;
@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.ride.share.aad.util.generators.GenerateTempData.getRandomTimestampInLastTwoDaysFrom;
+import static com.ride.share.util.generators.GenerateTempData.getRandomTimestampInLastTwoDaysFrom;
 import static java.lang.System.exit;
 
 public class UserDataGenerator {
@@ -41,7 +41,7 @@ public class UserDataGenerator {
         String emailId = generateEmailId(name);
         String password = faker.internet().password();
         User.Role role = faker.random().nextBoolean() ? User.Role.Rider : User.Role.Driver;
-        long lastSeen = getRandomTimestampInLastTwoDaysFrom();
+        long lastSeen = GenerateTempData.getRandomTimestampInLastTwoDaysFrom();
 
         return new User(userId, name, emailId, role, lastSeen, password);
     }
