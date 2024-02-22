@@ -1,8 +1,9 @@
 package com.ride.share.aad.controllers.auth;
 
-import com.ride.share.aad.config.scurity.InvalidAuthRequest;
-import com.ride.share.aad.config.scurity.RequestAuthHelper;
+import com.ride.share.aad.config.scurity.exceptions.InvalidAuthRequest;
 import com.ride.share.aad.storage.entity.User;
+import com.ride.share.aad.utils.auth.RequestAuthUtils;
+import com.ride.share.aad.utils.entity.UserUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,15 +22,15 @@ public class RideShareAuthController {
     @PostMapping("/login")
     @ResponseBody
     public String logIn(@RequestBody String userDataString, @RequestParam(value = "role", defaultValue = "User") String role) throws Exception {
-        return RequestAuthHelper.login(new JSONObject(userDataString), role);
+        return RequestAuthUtils.login(new JSONObject(userDataString), role);
     }
 
     @PostMapping("/signUp")
     @ResponseBody
     public String signUp(@RequestBody String userDataString) throws Exception {
-        User user = User.getUser(new JSONObject(userDataString));
+        User user = UserUtils.getUser(new JSONObject(userDataString));
         user.save();
-        return user.toJson().toString();
+        return UserUtils.toJson(user).toString();
     }
 
     @ExceptionHandler(Exception.class)

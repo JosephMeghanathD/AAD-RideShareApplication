@@ -1,8 +1,7 @@
 package com.ride.share.aad.storage.entity;
 
+import com.ride.share.aad.utils.entity.UserUtils;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
 
@@ -20,7 +19,7 @@ class UserTest {
 
     @Test
     void getAllUsers() {
-        for (User users : User.getAllUsers()) {
+        for (User users : UserUtils.getAllUsers()) {
             System.out.println(users);
         }
     }

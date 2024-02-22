@@ -5,8 +5,7 @@ import com.datastax.oss.driver.api.core.cql.BoundStatement;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.ride.share.aad.storage.dao.AbstractCassandraDAO;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.ride.share.aad.utils.entity.UserUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,44 +42,7 @@ public class User {
     public User(String userId, String name, String emailId, Role role, long lastSeen, String password) {
         this();
         this.userId = userId;
-        assignVariables(this, name, emailId, role, lastSeen, password);
-    }
-
-    private static void assignVariables(User entity, String name, String emailId,
-                                        Role role, long lastSeen, String password) {
-        entity.name = name;
-        entity.emailId = emailId;
-        entity.role = role;
-        entity.lastSeen = lastSeen;
-        entity.password = password;
-    }
-
-    public static List<User> getAllUsers() {
-        UsersDAO usersDAO = new UsersDAO();
-        return usersDAO.getAllUsers();
-    }
-
-    public static User getUser(JSONObject userJson) throws Exception {
-        String userId = userJson.getString("userId");
-        User existingUser = new User(userId);
-        if (existingUser.role != null) {
-            throw new Exception("User ID " + userId + " already exists");
-        }
-        return new User(userId,
-                userJson.getString("name"),
-                userJson.getString("emailId"),
-                Role.valueOf(userJson.getString("role")),
-                System.currentTimeMillis() / 1000, userJson.getString("password"));
-    }
-
-    public JSONObject toJson() throws JSONException {
-        JSONObject json = new JSONObject();
-        json.put("userId", this.userId);
-        json.put("name", this.name);
-        json.put("emailId", this.emailId);
-        json.put("role", this.role.toString());
-        json.put("lastSeen", this.lastSeen);
-        return json;
+        UserUtils.assignVariables(this, name, emailId, role, lastSeen, password);
     }
 
 
@@ -227,7 +189,7 @@ public class User {
                     user = new User();
                 }
                 user.userId = row.getString("userId");
-                assignVariables(user, row.getString("name"), row.getString("emailId"),
+                UserUtils.assignVariables(user, row.getString("name"), row.getString("emailId"),
                         Role.valueOf(row.getString("role")), row.getLong("lastSeen"),
                         row.getString("password"));
                 return user;
@@ -241,7 +203,7 @@ public class User {
             getCqlSession().execute(boundStatement).forEach(row -> {
                 User user = new User();
                 user.userId = row.getString("userId");
-                assignVariables(user, row.getString("name"), row.getString("emailId"),
+                UserUtils.assignVariables(user, row.getString("name"), row.getString("emailId"),
                         Role.valueOf(row.getString("role")), row.getLong("lastSeen"),
                         "HIDDEN");
                 userList.add(user);

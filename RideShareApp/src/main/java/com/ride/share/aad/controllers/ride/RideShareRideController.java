@@ -1,7 +1,9 @@
-package com.ride.share.aad.controllers;
+package com.ride.share.aad.controllers.ride;
+
 
 import com.ride.share.aad.config.scurity.exceptions.InvalidAuthRequest;
 import com.ride.share.aad.storage.entity.Ride;
+import com.ride.share.aad.storage.entity.User;
 import com.ride.share.aad.utils.auth.RequestAuthUtils;
 import com.ride.share.aad.utils.entity.RideUtils;
 import org.json.JSONArray;
@@ -14,24 +16,34 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/rs")
+@RequestMapping("/api/rs/ride")
 @CrossOrigin(origins = "http://localhost:3000")
-public class RideShareBasicController {
-
-    @GetMapping("/home/text")
+public class RideShareRideController {
+    @PostMapping("/post")
     @ResponseBody
-    public String homeText(@RequestHeader("Authorization") String authorizationHeader) throws InvalidAuthRequest {
-        if (!RequestAuthUtils.isValidToken(authorizationHeader)) {
-            throw new InvalidAuthRequest("Need to login before getting data");
+    public String postARide(@RequestBody String rideJson,
+                            @RequestHeader("Authorization") String authorizationHeader) throws Exception {
+        User user = RequestAuthUtils.getUser(authorizationHeader);
+        Ride ride = RideUtils.getRide(user, new JSONObject(rideJson));
+        ride.save();
+        return RideUtils.toJson(ride, true).toString();
+    }
+
+    @PostMapping("/by/user")
+    @ResponseBody
+    public String getUserPostedRides(@RequestBody String rideJson,
+                            @RequestHeader("Authorization") String authorizationHeader) throws Exception {
+        User user = RequestAuthUtils.getUser(authorizationHeader);
+        List<Ride> allRides = RideUtils.getRideByUser(user);
+        JSONObject data = new JSONObject();
+        JSONArray rides = new JSONArray();
+        for (Ride allRide : allRides) {
+            rides.put(RideUtils.toJson(allRide, true));
         }
-        return "This is RideShare Home, Welcome";
+        data.put("rides", rides);
+        return data.toString();
     }
 
-    @GetMapping("/public/home/text")
-    @ResponseBody
-    public String publicHomeText() {
-        return "This is RideShare Home, Public";
-    }
 
     @GetMapping("/rides")
     public String getRides(
@@ -50,6 +62,8 @@ public class RideShareBasicController {
         data.put("rides", rides);
         return data.toString();
     }
+
+
     @ExceptionHandler(InvalidAuthRequest.class)
     public ResponseEntity<ErrorResponse> handleAuthException(Exception ex) {
         ErrorResponse errorResponse = ErrorResponse.builder(ex, HttpStatus.UNAUTHORIZED, ex.getMessage()).build();

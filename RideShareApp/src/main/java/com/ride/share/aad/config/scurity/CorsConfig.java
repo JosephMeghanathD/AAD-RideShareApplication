@@ -1,4 +1,4 @@
-package com.ride.share.aad.config;
+package com.ride.share.aad.config.scurity;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

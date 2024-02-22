@@ -4,6 +4,7 @@ import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.BoundStatement;
 import com.ride.share.aad.storage.entity.Ride;
 import com.ride.share.aad.storage.entity.User;
+import com.ride.share.aad.utils.entity.UserUtils;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -30,7 +31,7 @@ public class GenerateTempData {
                 user.save();
             }
         }
-        List<Ride> rides = RideDataGenerator.generateRideData(SAVE ? User.getAllUsers() : users, NO_OF_RIDES);
+        List<Ride> rides = RideDataGenerator.generateRideData(SAVE ? UserUtils.getAllUsers() : users, NO_OF_RIDES);
         System.out.println("Rides:");
         for (Ride ride : rides) {
             System.out.println(ride);

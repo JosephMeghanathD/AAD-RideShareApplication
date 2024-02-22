@@ -3,6 +3,7 @@ package com.ride.share.util.generators;
 import com.github.javafaker.Faker;
 import com.ride.share.aad.storage.entity.Ride;
 import com.ride.share.aad.storage.entity.User;
+import com.ride.share.aad.utils.entity.UserUtils;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -16,7 +17,7 @@ import static java.lang.System.exit;
 public class RideDataGenerator {
 
     public static void main(String[] args) {
-        List<User> users = User.getAllUsers();
+        List<User> users = UserUtils.getAllUsers();
         if (users.isEmpty()) {
             System.out.println("No users found. Exiting.");
             return;
