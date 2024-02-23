@@ -6,7 +6,6 @@ import com.ride.share.aad.storage.entity.Ride;
 import com.ride.share.aad.storage.entity.User;
 import com.ride.share.aad.utils.auth.RequestAuthUtils;
 import com.ride.share.aad.utils.entity.RideUtils;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,13 +34,25 @@ public class RideShareRideController {
                             @RequestHeader("Authorization") String authorizationHeader) throws Exception {
         User user = RequestAuthUtils.getUser(authorizationHeader);
         List<Ride> allRides = RideUtils.getRideByUser(user);
-        JSONObject data = new JSONObject();
-        JSONArray rides = new JSONArray();
-        for (Ride allRide : allRides) {
-            rides.put(RideUtils.toJson(allRide, true));
-        }
-        data.put("rides", rides);
-        return data.toString();
+        return RideUtils.getAllRidesJson(allRides, true);
+    }
+
+    @PostMapping("/by/destination")
+    @ResponseBody
+    public String getRidesByDestination(@RequestBody String searchString,
+                                     @RequestHeader("Authorization") String authorizationHeader) throws Exception {
+        User user = RequestAuthUtils.getUser(authorizationHeader);
+        List<Ride> allRides = RideUtils.getRideByDestinationOrSource(true, searchString);
+        return RideUtils.getAllRidesJson(allRides, true);
+    }
+
+    @PostMapping("/by/source")
+    @ResponseBody
+    public String getRidesBySource(@RequestBody String searchString,
+                                        @RequestHeader("Authorization") String authorizationHeader) throws Exception {
+        User user = RequestAuthUtils.getUser(authorizationHeader);
+        List<Ride> allRides = RideUtils.getRideByDestinationOrSource(false, searchString);
+        return RideUtils.getAllRidesJson(allRides, true);
     }
 
 
@@ -54,13 +65,7 @@ public class RideShareRideController {
     ) throws InvalidAuthRequest {
         boolean validToken = RequestAuthUtils.isValidToken(authorizationHeader);
         List<Ride> allRides = RideUtils.getAllRides();
-        JSONObject data = new JSONObject();
-        JSONArray rides = new JSONArray();
-        for (Ride allRide : allRides) {
-            rides.put(RideUtils.toJson(allRide, validToken));
-        }
-        data.put("rides", rides);
-        return data.toString();
+        return RideUtils.getAllRidesJson(allRides, validToken);
     }
 
 

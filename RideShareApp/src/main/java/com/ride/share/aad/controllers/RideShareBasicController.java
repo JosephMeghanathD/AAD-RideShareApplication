@@ -50,6 +50,7 @@ public class RideShareBasicController {
         data.put("rides", rides);
         return data.toString();
     }
+
     @ExceptionHandler(InvalidAuthRequest.class)
     public ResponseEntity<ErrorResponse> handleAuthException(Exception ex) {
         ErrorResponse errorResponse = ErrorResponse.builder(ex, HttpStatus.UNAUTHORIZED, ex.getMessage()).build();

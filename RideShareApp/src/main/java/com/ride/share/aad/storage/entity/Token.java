@@ -26,6 +26,7 @@ public class Token {
     private String userId;
     private String jwtToken;
     private UserRole userRole = null;
+
     public Token() {
         this.tokensDAO = new TokensDAO();
     }
@@ -88,6 +89,15 @@ public class Token {
 
     public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Token.class.getSimpleName() + "[", "]")
+                .add("userId='" + userId + "'")
+                .add("jwtToken='" + jwtToken + "'")
+                .add("userRole=" + userRole)
+                .toString();
     }
 
     public enum UserRole {
@@ -169,14 +179,5 @@ public class Token {
             });
             return tokenList;
         }
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", Token.class.getSimpleName() + "[", "]")
-                .add("userId='" + userId + "'")
-                .add("jwtToken='" + jwtToken + "'")
-                .add("userRole=" + userRole)
-                .toString();
     }
 }

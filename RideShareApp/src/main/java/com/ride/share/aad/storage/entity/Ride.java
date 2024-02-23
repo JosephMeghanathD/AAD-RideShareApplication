@@ -74,68 +74,68 @@ public class Ride {
         return rideId;
     }
 
-    public String getStartingFromLocation() {
-        return startingFromLocation;
-    }
-
-    public String getDestination() {
-        return destination;
-    }
-
-    public int getNumberOfPeople() {
-        return numberOfPeople;
-    }
-
-    public double getFare() {
-        return fare;
-    }
-
-    public long getTimeOfRide() {
-        return timeOfRide;
-    }
-
-    public String getPostedBy() {
-        return postedBy;
-    }
-
-    public long getPostedAt() {
-        return postedAt;
-    }
-
-    public void setRidesDAO(RidesDAO ridesDAO) {
-        this.ridesDAO = ridesDAO;
-    }
-
     public void setRideId(String rideId) {
         this.rideId = rideId;
+    }
+
+    public String getStartingFromLocation() {
+        return startingFromLocation;
     }
 
     public void setStartingFromLocation(String startingFromLocation) {
         this.startingFromLocation = startingFromLocation;
     }
 
+    public String getDestination() {
+        return destination;
+    }
+
     public void setDestination(String destination) {
         this.destination = destination;
+    }
+
+    public int getNumberOfPeople() {
+        return numberOfPeople;
     }
 
     public void setNumberOfPeople(int numberOfPeople) {
         this.numberOfPeople = numberOfPeople;
     }
 
+    public double getFare() {
+        return fare;
+    }
+
     public void setFare(double fare) {
         this.fare = fare;
+    }
+
+    public long getTimeOfRide() {
+        return timeOfRide;
     }
 
     public void setTimeOfRide(long timeOfRide) {
         this.timeOfRide = timeOfRide;
     }
 
+    public String getPostedBy() {
+        return postedBy;
+    }
+
     public void setPostedBy(String postedBy) {
         this.postedBy = postedBy;
     }
 
+    public long getPostedAt() {
+        return postedAt;
+    }
+
     public void setPostedAt(long postedAt) {
         this.postedAt = postedAt;
+    }
+
+    public void setRidesDAO(RidesDAO ridesDAO) {
+        this.ridesDAO = ridesDAO;
     }
 
     @Override
@@ -171,6 +171,13 @@ public class Ride {
         public static List<Ride> getAllRideByUser(User user) {
             List<Ride> rideList = new ArrayList<>();
             BoundStatement boundStatement = getCqlSession().prepare("SELECT * FROM " + RIDES_TABLE + "WHERE postedBy=" + user.getUserId()).bind();
+            return RideUtils.getRides(boundStatement, rideList);
+        }
+
+        public static List<Ride> getAllRideByDestinationOrSource(boolean type, String searchString) {
+            List<Ride> rideList = new ArrayList<>();
+            BoundStatement boundStatement = getCqlSession().prepare("SELECT * FROM " + RIDES_TABLE + "WHERE " +
+                    (type ? "destination" : "startingFromLocation") + " LIKE '%" + searchString + "%'").bind();
             return RideUtils.getRides(boundStatement, rideList);
         }
 

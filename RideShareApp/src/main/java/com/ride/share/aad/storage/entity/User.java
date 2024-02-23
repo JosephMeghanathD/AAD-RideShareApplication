@@ -141,6 +141,20 @@ public class User {
 
         public static PreparedStatement SELECT_STMT;
 
+        public static List<User> getAllUsers() {
+            List<User> userList = new ArrayList<>();
+            BoundStatement boundStatement = getCqlSession().prepare("SELECT * FROM " + USERS_TABLE).bind();
+            getCqlSession().execute(boundStatement).forEach(row -> {
+                User user = new User();
+                user.userId = row.getString("userId");
+                UserUtils.assignVariables(user, row.getString("name"), row.getString("emailId"),
+                        Role.valueOf(row.getString("role")), row.getLong("lastSeen"),
+                        "HIDDEN");
+                userList.add(user);
+            });
+            return userList;
+        }
+
         @Override
         public PreparedStatement getCreateStmt() {
             return CREATE_STMT;
@@ -195,20 +209,6 @@ public class User {
                 return user;
             }
             return null;
-        }
-
-        public static List<User> getAllUsers() {
-            List<User> userList = new ArrayList<>();
-            BoundStatement boundStatement = getCqlSession().prepare("SELECT * FROM " + USERS_TABLE).bind();
-            getCqlSession().execute(boundStatement).forEach(row -> {
-                User user = new User();
-                user.userId = row.getString("userId");
-                UserUtils.assignVariables(user, row.getString("name"), row.getString("emailId"),
-                        Role.valueOf(row.getString("role")), row.getLong("lastSeen"),
-                        "HIDDEN");
-                userList.add(user);
-            });
-            return userList;
         }
     }
 }

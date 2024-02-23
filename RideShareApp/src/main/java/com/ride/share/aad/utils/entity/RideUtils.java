@@ -5,6 +5,7 @@ import com.datastax.oss.driver.api.core.cql.BoundStatement;
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.ride.share.aad.storage.entity.Ride;
 import com.ride.share.aad.storage.entity.User;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,7 +18,6 @@ public class RideUtils {
     public static List<Ride> getAllRides() {
         return Ride.RidesDAO.getAllRides();
     }
-
 
 
     public static Ride getRide(User user, JSONObject rideJson) {
@@ -44,6 +44,9 @@ public class RideUtils {
     public static List<Ride> getRideByUser(User user) {
         return Ride.RidesDAO.getAllRideByUser(user);
     }
+    public static List<Ride> getRideByDestinationOrSource(boolean type, String searchString) {
+        return Ride.RidesDAO.getAllRideByDestinationOrSource(type, searchString);
+    }
 
     public static List<Ride> getRides(BoundStatement boundStatement, List<Ride> rideList, CqlSession cqlSession) {
         cqlSession.execute(boundStatement).forEach(row -> rideList.add(mapToEntity(null, row)));
@@ -68,5 +71,15 @@ public class RideUtils {
         ride.setPostedBy(row.getString("postedBy"));
         ride.setPostedAt(row.getLong("postedAt"));
         return ride;
+    }
+
+    public static String getAllRidesJson(List<Ride> allRides, boolean validToken) {
+        JSONObject data = new JSONObject();
+        JSONArray rides = new JSONArray();
+        for (Ride allRide : allRides) {
+            rides.put(toJson(allRide, validToken));
+        }
+        data.put("rides", rides);
+        return data.toString();
     }
 }
