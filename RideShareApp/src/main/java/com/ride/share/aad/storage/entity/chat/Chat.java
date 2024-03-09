@@ -2,6 +2,7 @@ package com.ride.share.aad.storage.entity.chat;
 
 import com.datastax.oss.driver.api.core.cql.BoundStatement;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
+import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.ride.share.aad.storage.dao.AbstractCassandraDAO;
 import com.ride.share.aad.utils.entity.ChatUtils;
@@ -9,22 +10,30 @@ import com.ride.share.aad.utils.entity.ChatUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ride.share.aad.storage.service.CassandraStorageService.getCqlSession;
 import static com.ride.share.aad.utils.entity.ChatUtils.getChatID;
 
 public class Chat {
 
     public static final String CHAT_TABLE = "chats";
+    public static final int CHAT_TTL = 2 * 86400;
     String userID1, userID2, chatId;
     List<ChatMessage> messages;
-    transient ChatDAO chatDAO = new ChatDAO();
+    transient ChatDAO chatDAO;
 
     {
         ChatDAO chatDAO = new ChatDAO();
         chatDAO.createTable();
     }
 
+    public Chat() {
+        chatDAO = new ChatDAO();
+    }
+
     public Chat(String chatId) {
+        this();
         this.chatId = chatId;
+        chatDAO.mapToEntity(chatId, this);
     }
 
     public Chat(String userID1, String userID2) {
@@ -66,12 +75,13 @@ public class Chat {
         return messages;
     }
 
-    public void setMessages(List<ChatMessage> messages) {
-        this.messages = messages;
+    public Chat addMessage(ChatMessage message) {
+        messages.add(message);
+        return this;
     }
 
     public Chat save() {
-        chatDAO.insert(chatId, chatId, userID1, userID2, ChatUtils.toMessagesJson(messages));
+        chatDAO.insert(chatId, chatId, userID1, userID2, ChatUtils.toMessagesJsonStr(messages));
         return this;
     }
 
@@ -83,6 +93,11 @@ public class Chat {
     public Chat update() {
         chatDAO.update(chatId, messages);
         return this;
+    }
+
+    public static List<Chat> getAllChatsOfUser(String userId) {
+        PreparedStatement prepare = getCqlSession().prepare("Select * from " + CHAT_TABLE + " where chatId LIKE '%" + userId + "%';");
+        return ChatUtils.getAllChats(prepare);
     }
 
     public class ChatDAO extends AbstractCassandraDAO<Chat> {
@@ -131,7 +146,7 @@ public class Chat {
         public PreparedStatement getInsertStmt() {
             if (INSERT_STMT == null) {
                 INSERT_STMT = getCqlSession().prepare("INSERT INTO " + CHAT_TABLE +
-                        " (chatId, userId1, userId2, messages) VALUES (?, ?, ?, ?)");
+                        " (chatId, userId1, userId2, messages) VALUES (?, ?, ?, ?) USING TTL " + CHAT_TTL);
             }
             return INSERT_STMT;
         }

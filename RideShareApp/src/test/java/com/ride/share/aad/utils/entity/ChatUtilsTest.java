@@ -9,9 +9,9 @@ class ChatUtilsTest {
 
     @Test
     public void getChatIdTest() {
-        assertChatID("abc", "", "X2FiYw==");
-        assertChatID("abc", "abc", "YWJjX2FiYw==");
-        assertChatID("", "", "Xw==");
+        assertChatID("abc", "", "_abc");
+        assertChatID("abc", "abc", "abc_abc");
+        assertChatID("", "", "_");
 
     }
     public void assertChatID(String u1, String u2, String expected) {

@@ -1,6 +1,8 @@
 package com.ride.share.aad.utils.entity;
 
 
+import com.datastax.oss.driver.api.core.cql.PreparedStatement;
+import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.ride.share.aad.storage.entity.chat.Chat;
 import com.ride.share.aad.storage.entity.chat.ChatMessage;
@@ -8,25 +10,21 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.ride.share.aad.storage.service.CassandraStorageService.getCqlSession;
+
 public class ChatUtils {
 
     public static String getChatID(String userID1, String userID2) {
-        return Base64.getEncoder()
-                .encodeToString(Stream.of(userID1, userID2)
-                        .sorted().collect(Collectors.joining("_"))
-                        .getBytes());
+        return Stream.of(userID1, userID2).sorted().collect(Collectors.joining("_"));
     }
 
     public static Chat mapToEntity(Row row, Chat chat) {
-        return new Chat(row.getString("userId1"),
-                row.getString("userId2"),
-                fromMessagesJson(row.getString("messages")));
+        return new Chat(row.getString("userId1"), row.getString("userId2"), fromMessagesJson(row.getString("messages")));
     }
 
     public static JSONObject toJson(ChatMessage chatMessage) {
@@ -38,18 +36,22 @@ public class ChatUtils {
     }
 
     public static ChatMessage fromJson(JSONObject chatMessageJson) {
-        return new ChatMessage(chatMessageJson.getString("fromUserId"),
-                chatMessageJson.getString("message"),
-                chatMessageJson.getLong("timeStamp"));
+        return new ChatMessage(chatMessageJson.getString("fromUserId"), chatMessageJson.getString("message"), chatMessageJson.getLong("timeStamp"));
     }
 
-    public static String toMessagesJson(List<ChatMessage> messages) {
+    public static String toMessagesJsonStr(List<ChatMessage> messages) {
+        JSONArray messagesJson = toMessagesJson(messages);
+        return messagesJson.toString();
+    }
+
+    public static JSONArray toMessagesJson(List<ChatMessage> messages) {
         JSONArray messagesJson = new JSONArray();
         for (ChatMessage message : messages) {
             messagesJson.put(toJson(message));
         }
-        return messagesJson.toString();
+        return messagesJson;
     }
+
 
     public static List<ChatMessage> fromMessagesJson(String messagesJsonStr) {
         JSONArray messagesJson = new JSONArray(messagesJsonStr);
@@ -58,9 +60,31 @@ public class ChatUtils {
             JSONObject jsonObject = messagesJson.getJSONObject(i);
             messages.add(fromJson(jsonObject));
         }
-        messages = messages.stream()
-                .sorted(Comparator.comparingLong(ChatMessage::getTimeStamp))
-                .collect(Collectors.toList());
+        messages = messages.stream().sorted(Comparator.comparingLong(ChatMessage::getTimeStamp)).collect(Collectors.toList());
         return messages;
+    }
+
+    public static JSONObject toJson(Chat chat) {
+        JSONObject chatJson = new JSONObject();
+        chatJson.put("userID1", chat.getUserID1());
+        chatJson.put("userID2", chat.getUserID2());
+        chatJson.put("messages", toMessagesJson(chat.getMessages()));
+        return chatJson;
+    }
+
+    public static List<Chat> getAllChats(PreparedStatement query) {
+        List<Chat> chats = new ArrayList<>();
+        ResultSet execute = getCqlSession().execute(query.bind());
+        for (Row row : execute) {
+            chats.add(mapToEntity(row, null));
+        }
+        return chats;
+    }
+
+    public static JSONObject getAllChats(String userId) {
+        List<Chat> allChatsOfUser = Chat.getAllChatsOfUser(userId);
+        JSONObject allChats = new JSONObject();
+        //TODO: iterate and get all chats
+        return allChats;
     }
 }
