@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './RideList.css';
-import ErrorToast from '../../../BasicElements/ErrorToast';
 import axios from 'axios';
+import { RideTable } from './RideListTable';
 
-const ridesPerPage = 10;
+export const ridesPerPage = 10;
 
 
 const RideList = () => {
@@ -20,7 +20,7 @@ const RideList = () => {
       try {
         const response = await axios.get('http://localhost:8080/api/rs/rides', {
           headers: {
-            'Authorization': localStorage.getItem("jwtToken")
+            'Authorization': localStorage.getItem("jwtToken") || "XXX"
           }
         });
         setData(response.data);
@@ -74,45 +74,9 @@ const RideList = () => {
   const currentRides = sortedRides.slice(indexOfFirstRide, indexOfLastRide);
 
   return (
-    <div className="ride-list-container">
-      <table className="ride-list-table">
-        <thead>
-          <tr>
-            <th onClick={() => handleSort('startingFromLocation')}> Starting From Location {sortBy === 'startingFromLocation' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
-            <th onClick={() => handleSort('destination')}>Destination {sortBy === 'destination' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
-            <th onClick={() => handleSort('numberOfPeople')}>Number of People {sortBy === 'numberOfPeople' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
-            <th onClick={() => handleSort('fare')}>Fare {sortBy === 'fare' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
-            <th onClick={() => handleSort('timeOfRide')}>Time of Ride {sortBy === 'timeOfRide' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
-            <th onClick={() => handleSort('postedBy')}>Posted By {sortBy === 'postedBy' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
-            <th onClick={() => handleSort('postedAt')}>Posted At {sortBy === 'postedAt' && (sortOrder === 'asc' ? '▲' : '▼')}</th>
-            {localStorage.getItem('jwtToken') !== null && <th>Actions</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {currentRides.map((ride) => (
-            <tr key={ride.rideId}>
-              <td>{ride.startingFromLocation}</td>
-              <td>{ride.destination}</td>
-              <td>{ride.numberOfPeople}</td>
-              <td>{ride.fare}</td>
-              <td>{new Date(ride.timeOfRide).toLocaleString()}</td>
-              <td>{ride.postedBy}</td>
-              <td>{new Date(ride.postedAt).toLocaleString()}</td>
-              {localStorage.getItem('jwtToken') !== null && <td><button onClick={() => window.location.href = `/chat?${ride.postedBy}`}>Chat</button></td>}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="pagination">
-        <button onClick={() => handlePageChange(1)}>First</button>
-        <button onClick={() => handlePageChange(currentPage - 1)}>Previous</button>
-        <button onClick={() => handlePageChange(currentPage + 1)}>Next</button>
-        <button onClick={() => handlePageChange(Math.ceil(sortedRides.length / ridesPerPage))}>Last</button>
-
-      </div>
-      {error && <ErrorToast message={error} />}
-    </div>
+    RideTable(handleSort, sortBy, sortOrder, currentRides, handlePageChange, currentPage, sortedRides, error)
   );
 };
 
 export default RideList;
+

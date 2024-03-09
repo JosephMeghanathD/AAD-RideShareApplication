@@ -26,7 +26,7 @@ public class RequestAuthUtils {
     public static boolean isValidToken(String authorizationHeader) throws InvalidAuthRequest {
         Token t = new Token(authorizationHeader);
         if (t.getUserRole() == null) {
-            throw new InvalidAuthRequest("Invalid auth");
+            return false;
         }
         return true;
     }

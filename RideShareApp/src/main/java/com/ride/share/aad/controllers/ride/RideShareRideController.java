@@ -7,6 +7,7 @@ import com.ride.share.aad.storage.entity.User;
 import com.ride.share.aad.utils.auth.RequestAuthUtils;
 import com.ride.share.aad.utils.entity.RideUtils;
 import org.json.JSONObject;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
@@ -21,7 +22,7 @@ public class RideShareRideController {
     @PostMapping("/post")
     @ResponseBody
     public String postARide(@RequestBody String rideJson,
-                            @RequestHeader("Authorization") String authorizationHeader) throws Exception {
+                            @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
         User user = RequestAuthUtils.getUser(authorizationHeader);
         Ride ride = RideUtils.getRide(user, new JSONObject(rideJson));
         ride.save();
@@ -31,7 +32,7 @@ public class RideShareRideController {
     @PostMapping("/by/user")
     @ResponseBody
     public String getUserPostedRides(@RequestBody String rideJson,
-                            @RequestHeader("Authorization") String authorizationHeader) throws Exception {
+                            @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
         User user = RequestAuthUtils.getUser(authorizationHeader);
         List<Ride> allRides = RideUtils.getRideByUser(user);
         return RideUtils.getAllRidesJson(allRides, true);
@@ -40,7 +41,7 @@ public class RideShareRideController {
     @PostMapping("/by/destination")
     @ResponseBody
     public String getRidesByDestination(@RequestBody String searchString,
-                                     @RequestHeader("Authorization") String authorizationHeader) throws Exception {
+                                     @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
         User user = RequestAuthUtils.getUser(authorizationHeader);
         List<Ride> allRides = RideUtils.getRideByDestinationOrSource(true, searchString);
         return RideUtils.getAllRidesJson(allRides, true);
@@ -49,7 +50,7 @@ public class RideShareRideController {
     @PostMapping("/by/source")
     @ResponseBody
     public String getRidesBySource(@RequestBody String searchString,
-                                        @RequestHeader("Authorization") String authorizationHeader) throws Exception {
+                                        @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
         User user = RequestAuthUtils.getUser(authorizationHeader);
         List<Ride> allRides = RideUtils.getRideByDestinationOrSource(false, searchString);
         return RideUtils.getAllRidesJson(allRides, true);
@@ -61,7 +62,7 @@ public class RideShareRideController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "timeOfRide") String sortBy,
             @RequestParam(defaultValue = "asc") String sortOrder,
-            @RequestHeader("Authorization") String authorizationHeader
+            @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader
     ) throws InvalidAuthRequest {
         boolean validToken = RequestAuthUtils.isValidToken(authorizationHeader);
         List<Ride> allRides = RideUtils.getAllRides();

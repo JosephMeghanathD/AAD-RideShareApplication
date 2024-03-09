@@ -2,24 +2,17 @@
 import React from 'react';
 
 const RideListRow = ({ ride }) => {
-  const handleChatRedirect = () => {
-    if (ride.postedBy.startsWith('user')) {
-      window.location.href = `/chat?${ride.postedBy}`;
-    }
-  };
-
   return (
-    <tr>
-      <td>{ride.rideId}</td>
-      <td>{ride.startingFromLocation}</td>
-      <td>{ride.destination}</td>
-      <td>{ride.numberOfPeople}</td>
-      <td>{ride.fare}</td>
-      <td>{new Date(ride.timeOfRide * 1000).toLocaleString()}</td>
-      <td>{ride.postedBy}</td>
-      <td>{new Date(ride.postedAt * 1000).toLocaleString()}</td>
-      <td><button onClick={handleChatRedirect}>Chat</button></td>
-    </tr>
+    <tr key={ride.rideId}>
+              <td>{ride.startingFromLocation}</td>
+              <td>{ride.destination}</td>
+              <td>{ride.numberOfPeople}</td>
+              <td>{ride.fare}</td>
+              <td>{new Date(ride.timeOfRide).toLocaleString()}</td>
+              {localStorage.getItem('jwtToken') !== null && <td>{ride.postedBy}</td>}
+              <td>{new Date(ride.postedAt).toLocaleString()}</td>
+              {localStorage.getItem('jwtToken') !== null && <td><button onClick={() => window.location.href = `/chat?${ride.postedBy}`}>Chat</button></td>}
+            </tr>
   );
 };
 

@@ -6,6 +6,7 @@ import com.ride.share.aad.utils.auth.RequestAuthUtils;
 import com.ride.share.aad.utils.entity.RideUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
@@ -20,7 +21,7 @@ public class RideShareBasicController {
 
     @GetMapping("/home/text")
     @ResponseBody
-    public String homeText(@RequestHeader("Authorization") String authorizationHeader) throws InvalidAuthRequest {
+    public String homeText(@RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws InvalidAuthRequest {
         if (!RequestAuthUtils.isValidToken(authorizationHeader)) {
             throw new InvalidAuthRequest("Need to login before getting data");
         }
@@ -38,7 +39,7 @@ public class RideShareBasicController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "timeOfRide") String sortBy,
             @RequestParam(defaultValue = "asc") String sortOrder,
-            @RequestHeader("Authorization") String authorizationHeader
+            @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader
     ) throws InvalidAuthRequest {
         boolean validToken = RequestAuthUtils.isValidToken(authorizationHeader);
         List<Ride> allRides = RideUtils.getAllRides();
