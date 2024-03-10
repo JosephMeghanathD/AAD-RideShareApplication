@@ -2,6 +2,7 @@ package com.ride.share.aad.controllers;
 
 import com.ride.share.aad.config.scurity.exceptions.InvalidAuthRequest;
 import com.ride.share.aad.storage.entity.Ride;
+import com.ride.share.aad.storage.entity.User;
 import com.ride.share.aad.utils.auth.RequestAuthUtils;
 import com.ride.share.aad.utils.entity.RideUtils;
 import org.json.JSONArray;
@@ -22,10 +23,8 @@ public class RideShareBasicController {
     @GetMapping("/home/text")
     @ResponseBody
     public String homeText(@RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws InvalidAuthRequest {
-        if (!RequestAuthUtils.isValidToken(authorizationHeader)) {
-            throw new InvalidAuthRequest("Need to login before getting data");
-        }
-        return "This is RideShare Home, Welcome";
+        User user = RequestAuthUtils.getUser(authorizationHeader);
+        return "This is RideShare Home, Welcome " + user.getUserId();
     }
 
     @GetMapping("/public/home/text")

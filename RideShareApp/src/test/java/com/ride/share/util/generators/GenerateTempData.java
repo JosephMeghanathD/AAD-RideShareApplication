@@ -62,6 +62,10 @@ public class GenerateTempData {
         BoundStatement deleteUsersStatement = cqlSession.prepare("TRUNCATE users").bind();
         cqlSession.execute(deleteUsersStatement);
 
+        // Reset users table
+        BoundStatement deleteChatsStatement = cqlSession.prepare("TRUNCATE chats").bind();
+        cqlSession.execute(deleteChatsStatement);
+
     }
 
     public static long getRandomTimestampInLastTwoDaysFrom() {

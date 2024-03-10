@@ -19,6 +19,7 @@ public class ChatDataGenerator {
     }
 
     public static List<Chat> generateRandomConversations(List<User> allUsers, int numberOfChats, int numberOfMessages) {
+        long timeStamp = System.currentTimeMillis() / 1000;
         ArrayList<Chat> chats = new ArrayList<>();
         for (int i = 0; i < numberOfChats; i++) {
             User user = allUsers.get(random.nextInt(allUsers.size()));
@@ -32,7 +33,7 @@ public class ChatDataGenerator {
                     senderID = user.getUserId();
                 }
                 String sentence = faker.lorem().sentence();
-                ChatMessage chatMessage = new ChatMessage(senderID, sentence, System.currentTimeMillis() / 1000);
+                ChatMessage chatMessage = new ChatMessage(senderID, sentence, timeStamp + i + i1);
                 chat.addMessage(chatMessage);
             }
             chats.add(chat);
