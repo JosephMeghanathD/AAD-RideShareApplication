@@ -26,6 +26,7 @@ const Login = () => {
         });
         console.log(response);
         localStorage.setItem("jwtToken", response.data);
+        localStorage.setItem("currentUser", username);
         window.location.href = "./home";
       } catch (error) {
         console.error('Error fetching data:', error);

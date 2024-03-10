@@ -3,8 +3,6 @@ import './RideList.css';
 import axios from 'axios';
 import { RideTable } from './RideListTable';
 
-export const ridesPerPage = 10;
-
 
 const RideList = () => {
   const [sortBy, setSortBy] = useState('postedAt');
@@ -14,6 +12,19 @@ const RideList = () => {
   const [error, setError] = useState(null);
   
   const [data, setData] = useState({rides:[]});
+  const [screenHeight, setScreenHeight] = useState(window.innerHeight);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenHeight(window.innerHeight);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
   useEffect(() => {
     const fetchData = async () => {
       
@@ -42,6 +53,7 @@ const RideList = () => {
   };
 
   const handlePageChange = (pageNumber) => {
+    var ridesPerPage = screenHeight / 50;
     setError(null);
     if (pageNumber > Math.ceil(sortedRides.length / ridesPerPage)) {
       setError('You are already on last page!' );
@@ -68,14 +80,19 @@ const RideList = () => {
       return 0;
     }
   });
-
+  var ridesPerPage = screenHeight / 50;
   const indexOfLastRide = currentPage * ridesPerPage;
   const indexOfFirstRide = indexOfLastRide - ridesPerPage;
   const currentRides = sortedRides.slice(indexOfFirstRide, indexOfLastRide);
-
-  return (
-    RideTable(handleSort, sortBy, sortOrder, currentRides, handlePageChange, currentPage, sortedRides, error)
-  );
+  if (ridesPerPage < 10) {
+    return (
+      RideTable(handleSort, sortBy, sortOrder, currentRides, handlePageChange, currentPage, sortedRides, error, 10)
+    );
+  } else {
+    return (
+      RideTable(handleSort, sortBy, sortOrder, currentRides, handlePageChange, currentPage, sortedRides, error, ridesPerPage)
+    );
+  }
 };
 
 export default RideList;

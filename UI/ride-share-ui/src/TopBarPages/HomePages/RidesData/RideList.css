@@ -17,6 +17,7 @@
 
 .ride-list-table td {
   font-family: monospace, monospace;
+  display: flexbox;
 }
 
 .ride-list-table th {

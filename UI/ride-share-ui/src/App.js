@@ -6,6 +6,7 @@ import Home from "./TopBarPages/HomePages/Home";
 import AboutUs from "./TopBarPages/AboutUs";
 import ContactUs from "./TopBarPages/ContactUs";
 import AuthExtraction from "./TopBarPages/AuthPages/AuthExraction";
+import Chat from "./TopBarPages/Chat/Chat";
 
 function App() {
     let Component = Home;
@@ -21,6 +22,9 @@ function App() {
             break;
         case "/login":
             Component = AuthExtraction;
+            break;
+        case "/chat":
+            Component = Chat;
             break;
         default:
             Component = Home;

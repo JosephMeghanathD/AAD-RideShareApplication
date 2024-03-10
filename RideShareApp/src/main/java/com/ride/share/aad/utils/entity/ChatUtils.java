@@ -4,12 +4,16 @@ package com.ride.share.aad.utils.entity;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
+import com.ride.share.aad.controllers.auth.RideShareAuthController;
 import com.ride.share.aad.storage.entity.chat.Chat;
 import com.ride.share.aad.storage.entity.chat.ChatMessage;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,11 +23,17 @@ import static com.ride.share.aad.storage.service.CassandraStorageService.getCqlS
 
 public class ChatUtils {
 
+    private static final Logger logger = LoggerFactory.getLogger(ChatUtils.class);
+
     public static String getChatID(String userID1, String userID2) {
         return Stream.of(userID1, userID2).sorted().collect(Collectors.joining("_"));
     }
 
     public static Chat mapToEntity(Row row, Chat chat) {
+        if (chat != null) {
+            chat.setMessages(fromMessagesJson(row.getString("messages")));
+            return chat;
+        }
         return new Chat(row.getString("userId1"), row.getString("userId2"), fromMessagesJson(row.getString("messages")));
     }
 
@@ -81,10 +91,18 @@ public class ChatUtils {
         return chats;
     }
 
-    public static JSONObject getAllChats(String userId) {
+    public static JSONArray getAllChats(String userId) {
         List<Chat> allChatsOfUser = Chat.getAllChatsOfUser(userId);
-        JSONObject allChats = new JSONObject();
-        //TODO: iterate and get all chats
+        JSONArray allChats = new JSONArray();
+        for (Chat chat : allChatsOfUser) {
+            try {
+                String key = chat.getChatId();
+                chat.getMessages().sort(Comparator.comparingLong(ChatMessage::getTimeStamp).reversed());
+                allChats.put(ChatUtils.toJson(new Chat(chat.getUserID1(), chat.getUserID2(), Collections.singletonList(chat.getMessages().getFirst()))));
+            } catch (Exception e) {
+                logger.error("Failed to process chat: {}", chat, e);
+            }
+        }
         return allChats;
     }
 }

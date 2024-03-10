@@ -1,9 +1,8 @@
 import React from 'react';
 import ErrorToast from '../../../BasicElements/ErrorToast';
 import RideListRow from './RideListRow';
-import { ridesPerPage } from './RideList';
 
-export function RideTable(handleSort, sortBy, sortOrder, currentRides, handlePageChange, currentPage, sortedRides, error) {
+export function RideTable(handleSort, sortBy, sortOrder, currentRides, handlePageChange, currentPage, sortedRides, error, ridesPerPage) {
   return <div className="ride-list-container">
     <table className="ride-list-table">
       <thead>

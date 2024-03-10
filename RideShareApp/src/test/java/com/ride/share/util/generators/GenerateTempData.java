@@ -4,6 +4,7 @@ import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.BoundStatement;
 import com.ride.share.aad.storage.entity.Ride;
 import com.ride.share.aad.storage.entity.User;
+import com.ride.share.aad.storage.entity.chat.Chat;
 import com.ride.share.aad.utils.entity.UserUtils;
 
 import java.util.List;
@@ -37,6 +38,14 @@ public class GenerateTempData {
             System.out.println(ride);
             if (SAVE) {
                 ride.save();
+            }
+        }
+
+        List<Chat> chats = ChatDataGenerator.generateRandomConversations(users, 110, 40);
+        for (Chat chat : chats) {
+            System.out.println(chat);
+            if (SAVE) {
+                chat.save();
             }
         }
         exit(0);

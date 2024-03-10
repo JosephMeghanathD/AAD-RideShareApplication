@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/rs/chat")
 @CrossOrigin(origins = "http://localhost:3000")
 public class RideShareChatController {
-    @PostMapping("/{toUserId}")
+    @GetMapping("/{toUserId}")
     @ResponseBody
     public String getMessages(@PathVariable("toUserId") String toUserId, @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
         User user = RequestAuthUtils.getUser(authorizationHeader);
@@ -20,13 +20,12 @@ public class RideShareChatController {
         return ChatUtils.toJson(chat).toString();
     }
 
-    @PostMapping("/active")
+    @GetMapping("/conversations")
     @ResponseBody
     public String getAllChats(@RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
         User user = RequestAuthUtils.getUser(authorizationHeader);
         ChatUtils.getAllChats(user.getUserId());
-        // TODO: get all chat ids
-        return "";
+        return ChatUtils.getAllChats(user.getUserId()).toString();
     }
 
 
