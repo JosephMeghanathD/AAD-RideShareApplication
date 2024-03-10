@@ -15,6 +15,9 @@ const UserProfile = () => {
         });
         setUserData(response.data);
       } catch (error) {
+        if (error.response.status === 401) {
+          localStorage.removeItem("jwtToken");
+        }
         console.error('Error fetching user data:', error);
       }
     };

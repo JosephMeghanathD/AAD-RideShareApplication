@@ -5,6 +5,7 @@ import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.ride.share.aad.controllers.auth.RideShareAuthController;
+import com.ride.share.aad.storage.entity.User;
 import com.ride.share.aad.storage.entity.chat.Chat;
 import com.ride.share.aad.storage.entity.chat.ChatMessage;
 import org.json.JSONArray;
@@ -104,5 +105,10 @@ public class ChatUtils {
             }
         }
         return allChats;
+    }
+
+
+    public static ChatMessage fromJson(String chatMessage, User user) {
+        return new ChatMessage(user.getUserId(), chatMessage, System.currentTimeMillis()/1000);
     }
 }

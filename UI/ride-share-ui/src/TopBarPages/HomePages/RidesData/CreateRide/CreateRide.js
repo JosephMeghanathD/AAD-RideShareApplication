@@ -33,6 +33,9 @@ const CreateRideForm = () => {
       console.log('Ride created successfully:', response.data);
       window.location.href = "./user";
     } catch (error) {
+        if (error.response.status === 401) {
+            localStorage.removeItem("jwtToken");
+          }
       console.error('Error creating ride:', error);
     }
   };

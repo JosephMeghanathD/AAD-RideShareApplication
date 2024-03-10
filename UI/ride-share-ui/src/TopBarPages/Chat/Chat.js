@@ -5,7 +5,7 @@ import ChatBox from './ChatBox/ChatBox.js';
 
 
 const Chat = () => {
-    const [chatId, setChatID] = useState("")
+    var [chatId, setChatID] = useState(new URLSearchParams(window.location.search).get('activechat'));
     return (
 		<div className="chat-box-div">
 			<div className="border conversations-div">

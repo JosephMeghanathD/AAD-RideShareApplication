@@ -11,7 +11,7 @@ const RideListRow = ({ ride }) => {
               <td>{new Date(ride.timeOfRide).toLocaleString()}</td>
               {localStorage.getItem('jwtToken') !== null && <td>{ride.postedBy}</td>}
               <td>{new Date(ride.postedAt).toLocaleString()}</td>
-              {localStorage.getItem('jwtToken') !== null && <td><button onClick={() => window.location.href = `/chat?${ride.postedBy}`}>Chat</button></td>}
+              {localStorage.getItem('jwtToken') !== null && localStorage.getItem("currentUser") !== ride.postedBy && <td><button onClick={() => window.location.href = `/chat?activechat=${ride.postedBy}`}>Chat</button></td>}
             </tr>
   );
 };

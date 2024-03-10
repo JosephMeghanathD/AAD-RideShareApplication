@@ -16,11 +16,20 @@ const Conversations = ({setChatID}) => {
             });
             setData(response.data);
           } catch (error) {
+            if (error.response.status === 401) {
+                localStorage.removeItem("jwtToken");
+              }
             console.error('Error fetching conversations:', error);
           }
         };
     
         fetchData();
+        const intervalId = setInterval(() => {
+          fetchData();
+        }, 5000);
+      
+        // Clean up interval on component unmount
+        return () => clearInterval(intervalId);
       }, []);
     return (
 		<div className="conversations-container">

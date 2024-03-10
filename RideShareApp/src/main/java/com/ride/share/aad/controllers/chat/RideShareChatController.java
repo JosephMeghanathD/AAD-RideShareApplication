@@ -12,6 +12,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/rs/chat")
 @CrossOrigin(origins = "http://localhost:3000")
 public class RideShareChatController {
+    @PostMapping("/send/{toUserId}")
+    @ResponseBody
+    public String sendMessage(@RequestBody String chatMessage, @PathVariable("toUserId") String toUserId, @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
+        User user = RequestAuthUtils.getUser(authorizationHeader);
+        Chat chat = new Chat(user.getUserId(), toUserId);
+        JSONObject chatJson = new JSONObject(chatMessage);
+        chat.addMessage(ChatUtils.fromJson(chatJson.getString("message"), user));
+        chat.save();
+        return ChatUtils.toJson(chat).toString();
+    }
+
     @GetMapping("/{toUserId}")
     @ResponseBody
     public String getMessages(@PathVariable("toUserId") String toUserId, @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
@@ -28,16 +39,5 @@ public class RideShareChatController {
         return ChatUtils.getAllChats(user.getUserId()).toString();
     }
 
-
-    @PostMapping("/send/{toUserId}")
-    @ResponseBody
-    public String sendMessage(@RequestBody String chatMessage, @PathVariable("toUserId") String toUserId, @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
-        User user = RequestAuthUtils.getUser(authorizationHeader);
-        Chat chat = new Chat(user.getUserId(), toUserId);
-        JSONObject chatMessageJson = new JSONObject(chatMessage);
-        chat.addMessage(ChatUtils.fromJson(chatMessageJson));
-        chat.save();
-        return ChatUtils.toJson(chat).toString();
-    }
 
 }
