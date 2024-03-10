@@ -1,0 +1,60 @@
+/* UserProfile.css */
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+  }
+  
+  .logout-button {
+    padding: 10px 20px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .logout-button:hover {
+    background-color: #c82333;
+  }
+  
+  .user-profile {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .user-profile h2 {
+    margin-bottom: 10px;
+  }
+  
+  .user-profile p {
+    margin: 5px 0;
+  }
+  
+  .button-container {
+    text-align: center;
+  }
+  
+  .button-container button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .button-container button:hover {
+    background-color: #0056b3;
+  }
+  

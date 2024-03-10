@@ -7,6 +7,8 @@ import AboutUs from "./TopBarPages/AboutUs";
 import ContactUs from "./TopBarPages/ContactUs";
 import AuthExtraction from "./TopBarPages/AuthPages/AuthExraction";
 import Chat from "./TopBarPages/Chat/Chat";
+import UserProfile from "./TopBarPages/Profile/UserProfile";
+import CreateRideForm from "./TopBarPages/HomePages/RidesData/CreateRide/CreateRide";
 
 function App() {
     let Component = Home;
@@ -25,6 +27,12 @@ function App() {
             break;
         case "/chat":
             Component = Chat;
+            break;
+        case "/user":
+            Component = UserProfile;
+            break;
+        case "/create-ride":
+            Component = CreateRideForm;
             break;
         default:
             Component = Home;

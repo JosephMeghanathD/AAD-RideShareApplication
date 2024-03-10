@@ -23,7 +23,7 @@ public class RideUtils {
     public static Ride getRide(User user, JSONObject rideJson) {
         return new Ride(rideJson.getString("startingFromLocation"), rideJson.getString("destination"),
                 rideJson.getInt("numberOfPeople"), rideJson.getDouble("fare"),
-                rideJson.getLong("timeOfRide"), user.getUserId(), rideJson.getLong("postedAt"));
+                rideJson.getLong("timeOfRide"), user.getUserId(), System.currentTimeMillis());
     }
 
     public static JSONObject toJson(Ride ride, boolean validToken) throws JSONException {
