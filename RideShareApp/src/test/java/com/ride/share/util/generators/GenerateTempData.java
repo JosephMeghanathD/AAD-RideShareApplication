@@ -25,7 +25,8 @@ public class GenerateTempData {
             resetData();
         }
         List<User> users = UserDataGenerator.generateUserData(NO_OF_USERS);
-        users.add(new User("wow", "wow", "wow@gmail.edu", User.Role.Rider, System.currentTimeMillis()/1000, "123"));
+        users.add(new User("wow", "wow", "wow@gmail.edu", User.Role.Rider, GenerateTempData.getRandomTimestampInLastTwoDaysFrom(), "123"));
+        users.add(new User("wow1", "wow", "wow@gmail.edu", User.Role.Driver, GenerateTempData.getRandomTimestampInLastTwoDaysFrom(), "123"));
         System.out.println("Users:");
         for (User user : users) {
             System.out.println(user);
