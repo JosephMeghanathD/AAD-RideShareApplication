@@ -18,7 +18,7 @@ services:
 
   chat-service:
     build:
-      context: ./RideShareAppChatService
+      context: ./RideShareAppRideService
       dockerfile: Dockerfile
     ports:
       - "8081:8081"
@@ -33,7 +33,7 @@ services:
 
   ride-service:
     build:
-      context: ./RideShareAppRideService
+      context: ./RideShareAppChatService
       dockerfile: Dockerfile
     ports:
       - "8082:8082"

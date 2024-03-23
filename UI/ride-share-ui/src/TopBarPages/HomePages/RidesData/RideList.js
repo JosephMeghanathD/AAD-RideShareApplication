@@ -29,7 +29,7 @@ const RideList = () => {
     const fetchData = async () => {
       
       try {
-        const response = await axios.get('http://localhost:8081/api/rs/rides', {
+        const response = await axios.get('http://localhost:8081/api/rs/ride/rides', {
           headers: {
             'Authorization': localStorage.getItem("jwtToken") || "XXX"
           }
