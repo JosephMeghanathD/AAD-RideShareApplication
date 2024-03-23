@@ -16,7 +16,7 @@ const ChatBox = ({ chatID }) => {
   
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/rs/chat/${chatID}`,
+          `http://localhost:8082/api/rs/chat/${chatID}`,
           {
             headers: {
               'Authorization': localStorage.getItem("jwtToken") || "XXX",
