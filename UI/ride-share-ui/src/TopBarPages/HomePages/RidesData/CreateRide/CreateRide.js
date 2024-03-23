@@ -24,7 +24,7 @@ const CreateRideForm = () => {
     console.log('Ride data:', rideData);
     try {
       rideData.timeOfRide = new Date(rideData.timeOfRide).getTime()
-      const response = await axios.post('http://localhost:8080/api/rs/ride/post', rideData, {
+      const response = await axios.post('http://localhost:8081/api/rs/ride/post', rideData, {
         headers: {
             'Authorization': localStorage.getItem("jwtToken") || "XXX",
             'Content-Type': 'application/json',

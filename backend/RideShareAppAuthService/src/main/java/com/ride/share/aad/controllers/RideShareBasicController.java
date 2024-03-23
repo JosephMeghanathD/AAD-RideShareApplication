@@ -32,25 +32,6 @@ public class RideShareBasicController {
     public String publicHomeText() {
         return "This is RideShare Home, Public";
     }
-
-    @GetMapping("/rides")
-    public String getRides(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "timeOfRide") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortOrder,
-            @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader
-    ) throws InvalidAuthRequest {
-        boolean validToken = RequestAuthUtils.isValidToken(authorizationHeader);
-        List<Ride> allRides = RideUtils.getAllRides();
-        JSONObject data = new JSONObject();
-        JSONArray rides = new JSONArray();
-        for (Ride allRide : allRides) {
-            rides.put(RideUtils.toJson(allRide, validToken));
-        }
-        data.put("rides", rides);
-        return data.toString();
-    }
-
     @ExceptionHandler(InvalidAuthRequest.class)
     public ResponseEntity<ErrorResponse> handleAuthException(Exception ex) {
         ErrorResponse errorResponse = ErrorResponse.builder(ex, HttpStatus.UNAUTHORIZED, ex.getMessage()).build();

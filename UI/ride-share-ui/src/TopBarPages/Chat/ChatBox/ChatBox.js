@@ -51,7 +51,7 @@ const ChatBox = ({ chatID }) => {
   const sendMessage = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/rs/chat/send/${chatID}`,
+        `http://localhost:8082/api/rs/chat/send/${chatID}`,
         {message: messageText},
         {
           headers: {
