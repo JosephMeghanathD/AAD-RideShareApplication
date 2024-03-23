@@ -9,7 +9,7 @@ const Conversations = ({setChatID}) => {
         const fetchData = async () => {
           
           try {
-            const response = await axios.get('http://localhost:8080/api/rs/chat/conversations', {
+            const response = await axios.get('http://localhost:8082/api/rs/chat/conversations', {
               headers: {
                 'Authorization': localStorage.getItem("jwtToken") || "XXX"
               }
