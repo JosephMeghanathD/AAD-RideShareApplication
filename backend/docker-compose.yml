@@ -16,7 +16,7 @@ services:
       timeout: 5s
       start_period: 20s
 
-  chat-service:
+  ride-service:
     build:
       context: ./RideShareAppRideService
       dockerfile: Dockerfile
@@ -31,7 +31,7 @@ services:
       timeout: 5s
       start_period: 20s
 
-  ride-service:
+  chat-service:
     build:
       context: ./RideShareAppChatService
       dockerfile: Dockerfile

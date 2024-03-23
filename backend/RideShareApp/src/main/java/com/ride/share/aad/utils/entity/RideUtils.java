@@ -65,7 +65,7 @@ public class RideUtils {
         ride.setRideId(row.getString("rideId"));
         ride.setStartingFromLocation(row.getString("startingFromLocation"));
         ride.setDestination(row.getString("destination"));
-        ride.setNumberOfPeople(row.getInt("numberOfPeople"));
+        ride.setNumberOfPeople(row.getLong("numberOfPeople"));
         ride.setFare(row.getDouble("fare"));
         ride.setTimeOfRide(row.getLong("timeOfRide"));
         ride.setPostedBy(row.getString("postedBy"));

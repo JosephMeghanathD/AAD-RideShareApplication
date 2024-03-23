@@ -17,6 +17,7 @@ import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/rs/ride")
@@ -27,11 +28,40 @@ public class RideShareRideController {
 
     @PostMapping("/post")
     @ResponseBody
-    public String postARide(@RequestBody String rideJson,
+    public String postRide(@RequestBody String rideJson,
                             @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
         User user = RequestAuthUtils.getUser(authorizationHeader);
         Ride ride = RideUtils.getRide(user, new JSONObject(rideJson));
         ride.save();
+        return RideUtils.toJson(ride, true).toString();
+    }
+
+    @GetMapping("/{rideId}")
+    @ResponseBody
+    public String getRide(@PathVariable String rideId,
+                            @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
+        User user = RequestAuthUtils.getUser(authorizationHeader);
+        Ride ride = new Ride(rideId);
+        return RideUtils.toJson(ride, true).toString();
+    }
+
+    @PutMapping("/{rideId}")
+    @ResponseBody
+    public String editRide(@PathVariable String rideId, @RequestBody String rideJson,
+                            @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
+        User user = RequestAuthUtils.getUser(authorizationHeader);
+        Ride ride = new Ride(rideId);
+        if (!Objects.equals(ride.getPostedBy(), user.getUserId())) {
+            throw new InvalidAuthRequest("Invalid userId for operation");
+        }
+        Ride updatedRide = RideUtils.getRide(user, new JSONObject(rideJson));
+        ride.setDestination(updatedRide.getDestination());
+        ride.setFare(updatedRide.getFare());
+        ride.setStartingFromLocation(updatedRide.getStartingFromLocation());
+        ride.setNumberOfPeople(updatedRide.getNumberOfPeople());
+        ride.setTimeOfRide(updatedRide.getTimeOfRide());
+        ride.setPostedAt(System.currentTimeMillis());
+        ride.update();
         return RideUtils.toJson(ride, true).toString();
     }
 
@@ -60,6 +90,19 @@ public class RideShareRideController {
         User user = RequestAuthUtils.getUser(authorizationHeader);
         List<Ride> allRides = RideUtils.getRideByDestinationOrSource(false, searchString);
         return RideUtils.getAllRidesJson(allRides, true);
+    }
+
+    @DeleteMapping("/{rideId}")
+    @ResponseBody
+    public String deleteRide(@PathVariable String rideId,
+                                   @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
+        User user = RequestAuthUtils.getUser(authorizationHeader);
+        Ride ride = new Ride(rideId);
+        if (!Objects.equals(ride.getPostedBy(), user.getUserId())) {
+            throw new InvalidAuthRequest("Invalid userId for operation");
+        }
+        ride.delete();
+        return RideUtils.toJson(ride, true).toString();
     }
 
     @GetMapping("/rides")

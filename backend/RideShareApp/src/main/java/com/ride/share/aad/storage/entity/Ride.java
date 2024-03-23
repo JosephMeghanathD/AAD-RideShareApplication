@@ -66,7 +66,7 @@ public class Ride {
     }
 
     public Ride update() {
-        ridesDAO.update(rideId, startingFromLocation, destination, numberOfPeople, fare, timeOfRide, postedBy, postedAt);
+        ridesDAO.update(rideId, startingFromLocation, destination, numberOfPeople, fare, timeOfRide, postedBy, postedAt, rideId);
         return this;
     }
 
@@ -98,7 +98,7 @@ public class Ride {
         return numberOfPeople;
     }
 
-    public void setNumberOfPeople(int numberOfPeople) {
+    public void setNumberOfPeople(long numberOfPeople) {
         this.numberOfPeople = numberOfPeople;
     }
 
