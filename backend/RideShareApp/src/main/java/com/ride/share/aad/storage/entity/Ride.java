@@ -5,6 +5,8 @@ import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.ride.share.aad.storage.dao.AbstractCassandraDAO;
 import com.ride.share.aad.utils.entity.RideUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -170,13 +172,15 @@ public class Ride {
 
         public static List<Ride> getAllRideByUser(User user) {
             List<Ride> rideList = new ArrayList<>();
-            BoundStatement boundStatement = getCqlSession().prepare("SELECT * FROM " + RIDES_TABLE + "WHERE postedBy=" + user.getUserId()).bind();
+            BoundStatement boundStatement = getCqlSession().prepare("SELECT * FROM " + RIDES_TABLE + " WHERE postedBy='" + user.getUserId() + "' ALLOW FILTERING;").bind();
+            Logger logger = LoggerFactory.getLogger(Ride.class);
+            logger.info(boundStatement.getPreparedStatement().getQuery());
             return RideUtils.getRides(boundStatement, rideList);
         }
 
         public static List<Ride> getAllRideByDestinationOrSource(boolean type, String searchString) {
             List<Ride> rideList = new ArrayList<>();
-            BoundStatement boundStatement = getCqlSession().prepare("SELECT * FROM " + RIDES_TABLE + "WHERE " +
+            BoundStatement boundStatement = getCqlSession().prepare("SELECT * FROM " + RIDES_TABLE + " WHERE " +
                     (type ? "destination" : "startingFromLocation") + " LIKE '%" + searchString + "%'").bind();
             return RideUtils.getRides(boundStatement, rideList);
         }

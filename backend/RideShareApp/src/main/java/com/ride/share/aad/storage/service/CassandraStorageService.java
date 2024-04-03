@@ -20,7 +20,7 @@ public class CassandraStorageService {
         if (cqlSession == null) {
             cqlSession = CqlSession.builder().withKeyspace(getKEYSPACE())
                     .withLocalDatacenter("datacenter1")
-                    .addContactPoint(new InetSocketAddress("172.20.0.5", 9042)).build(); // change this based on cassandra portid from docker
+                    .addContactPoint(new InetSocketAddress("172.20.0.3", 9042)).build(); // change this based on cassandra portid from docker
         }
     }
 

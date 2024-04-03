@@ -4,7 +4,7 @@ import axios from 'axios';
 import { RideTable } from './RideListTable';
 
 
-const RideList = () => {
+const RideList = ({forUser}) => {
   const [sortBy, setSortBy] = useState('postedAt');
   const [sortOrder, setSortOrder] = useState('asc');
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,7 +29,11 @@ const RideList = () => {
     const fetchData = async () => {
       
       try {
-        const response = await axios.get('http://localhost:8081/api/rs/ride/rides', {
+        var rideUrl = 'http://localhost:8081/api/rs/ride/rides';
+        if (forUser) {
+          rideUrl = 'http://localhost:8081/api/rs/ride/by/user'
+        }
+        const response = await axios.get(rideUrl, {
           headers: {
             'Authorization': localStorage.getItem("jwtToken") || "XXX"
           }

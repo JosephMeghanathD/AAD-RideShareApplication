@@ -65,10 +65,9 @@ public class RideShareRideController {
         return RideUtils.toJson(ride, true).toString();
     }
 
-    @PostMapping("/by/user")
+    @GetMapping("/by/user")
     @ResponseBody
-    public String getUserPostedRides(@RequestBody String rideJson,
-                            @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
+    public String getUserPostedRides(@RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
         User user = RequestAuthUtils.getUser(authorizationHeader);
         List<Ride> allRides = RideUtils.getRideByUser(user);
         return RideUtils.getAllRidesJson(allRides, true);

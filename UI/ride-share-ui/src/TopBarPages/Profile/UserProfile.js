@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './UserProfile.css'; // Import the CSS file
+import RideList from '../HomePages/RidesData/RideList';
 
 const UserProfile = () => {
   const [userData, setUserData] = useState(null);
@@ -38,7 +39,8 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="container">
+    <div>
+      <div className="container">
       <div className="header">
         <button className="logout-button" onClick={handleLogout}>Logout</button>
       </div>
@@ -59,6 +61,8 @@ const UserProfile = () => {
           <button onClick={handlePostRideClick}>Post a Ride</button>
         </div>
       </div>
+    </div>
+    <RideList forUser={'User'}/>
     </div>
   );
 };
