@@ -1,7 +1,7 @@
 package com.ride.share.aad.controllers.chat;
 
 import com.ride.share.aad.storage.entity.User;
-import com.ride.share.aad.storage.entity.chat.Chat;
+import com.ride.share.aad.storage.entity.Chat;
 import com.ride.share.aad.utils.auth.RequestAuthUtils;
 import com.ride.share.aad.utils.entity.ChatUtils;
 import org.json.JSONObject;

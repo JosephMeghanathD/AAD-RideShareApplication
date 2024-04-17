@@ -1,23 +1,18 @@
 package com.ride.share.aad.utils.entity;
 
-import com.datastax.oss.driver.api.core.CqlSession;
-import com.datastax.oss.driver.api.core.cql.BoundStatement;
-import com.datastax.oss.driver.api.core.cql.Row;
+
 import com.ride.share.aad.storage.entity.Ride;
 import com.ride.share.aad.storage.entity.User;
+import jakarta.persistence.Entity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.ride.share.aad.storage.service.CassandraStorageService.getCqlSession;
-
+@Service
 public class RideUtils {
-
-    public static List<Ride> getAllRides() {
-        return Ride.RidesDAO.getAllRides();
-    }
 
 
     public static Ride getRide(User user, JSONObject rideJson) {
@@ -39,38 +34,6 @@ public class RideUtils {
         }
         json.put("postedAt", ride.getPostedAt());
         return json;
-    }
-
-    public static List<Ride> getRideByUser(User user) {
-        return Ride.RidesDAO.getAllRideByUser(user);
-    }
-    public static List<Ride> getRideByDestinationOrSource(boolean type, String searchString) {
-        return Ride.RidesDAO.getAllRideByDestinationOrSource(type, searchString);
-    }
-
-    public static List<Ride> getRides(BoundStatement boundStatement, List<Ride> rideList, CqlSession cqlSession) {
-        cqlSession.execute(boundStatement).forEach(row -> rideList.add(mapToEntity(null, row)));
-        return rideList;
-    }
-
-    public static List<Ride> getRides(BoundStatement boundStatement, List<Ride> rideList) {
-        CqlSession cqlSession = getCqlSession();
-        return getRides(boundStatement, rideList, cqlSession);
-    }
-
-    public static Ride mapToEntity(Ride ride, Row row) {
-        if (ride == null) {
-            ride = new Ride();
-        }
-        ride.setRideId(row.getString("rideId"));
-        ride.setStartingFromLocation(row.getString("startingFromLocation"));
-        ride.setDestination(row.getString("destination"));
-        ride.setNumberOfPeople(row.getLong("numberOfPeople"));
-        ride.setFare(row.getDouble("fare"));
-        ride.setTimeOfRide(row.getLong("timeOfRide"));
-        ride.setPostedBy(row.getString("postedBy"));
-        ride.setPostedAt(row.getLong("postedAt"));
-        return ride;
     }
 
     public static String getAllRidesJson(List<Ride> allRides, boolean validToken) {

@@ -21,10 +21,11 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'io.jsonwebtoken:jjwt:0.12.4'
-	implementation 'com.datastax.cassandra:cassandra-driver-core:4.0.0'
-	implementation 'com.datastax.oss:java-driver-core:4.17.0'
+	
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-	// generator deps
+	runtimeOnly 'org.postgresql:postgresql'
+
 	implementation("com.github.javafaker:javafaker:1.0.2"){ exclude module : "snakeyaml" }
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
