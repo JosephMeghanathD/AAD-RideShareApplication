@@ -62,13 +62,13 @@ public class Chat {
         return messages;
     }
 
+    public void setMessages(List<ChatMessage> messages) {
+        this.messages = messages;
+    }
+
     public Chat addMessage(ChatMessage message) {
         messages.add(message);
         return this;
-    }
-
-    public void setMessages(List<ChatMessage> messages) {
-        this.messages = messages;
     }
 
 }

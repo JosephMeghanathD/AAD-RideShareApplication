@@ -1,8 +1,6 @@
 package com.ride.share.aad.controllers;
 
 import com.ride.share.aad.config.exceptions.InvalidAuthRequest;
-import com.ride.share.aad.storage.dao.RideDAO;
-import com.ride.share.aad.storage.dao.UserDAO;
 import com.ride.share.aad.storage.entity.User;
 import com.ride.share.aad.utils.auth.RequestAuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +32,7 @@ public class RideShareBasicController {
     public String publicHomeText() {
         return "This is RideShare Home, Public";
     }
+
     @ExceptionHandler(InvalidAuthRequest.class)
     public ResponseEntity<ErrorResponse> handleAuthException(Exception ex) {
         ErrorResponse errorResponse = ErrorResponse.builder(ex, HttpStatus.UNAUTHORIZED, ex.getMessage()).build();

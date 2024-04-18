@@ -40,7 +40,7 @@ public class UserDataGenerator {
         String fn = nameParts[0];
         String ln = nameParts[nameParts.length - 1];
 
-        String one = fn.substring(0, (int) (Math.random() * (fn.length()))  + 1);
+        String one = fn.substring(0, (int) (Math.random() * (fn.length())) + 1);
         String two = getRandomIds(0, 3);
         String three = "";
         if (ln.length() >= 3) {

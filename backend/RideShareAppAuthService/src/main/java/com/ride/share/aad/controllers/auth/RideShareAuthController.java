@@ -33,24 +33,24 @@ public class RideShareAuthController {
 
     @GetMapping("/get/{userID}")
     @ResponseBody
-    public User getUser(@PathVariable("userID") String userID,
-                          @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
+    public ResponseEntity<User> getUser(@PathVariable("userID") String userID,
+                                        @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
         User user = requestAuthUtils.getUser(authorizationHeader);
-        return user;
+        return ResponseEntity.ok().body(user);
     }
 
     @PostMapping("/public/login")
     @ResponseBody
-    public Token logIn(@RequestBody String userDataString, @RequestParam(value = "role", defaultValue = "User") String role) throws Exception {
-        return requestAuthUtils.login(new JSONObject(userDataString), role);
+    public ResponseEntity<Token> logIn(@RequestBody String userDataString, @RequestParam(value = "role", defaultValue = "User") String role) throws Exception {
+        return ResponseEntity.ok().body(requestAuthUtils.login(new JSONObject(userDataString), role));
     }
 
 
     @PostMapping("/public/signUp")
     @ResponseBody
-    public User signUp(@RequestBody User user) throws Exception {
+    public ResponseEntity<User> signUp(@RequestBody User user) throws Exception {
         userDAO.save(user);
-        return user;
+        return ResponseEntity.ok().body(user);
     }
 
 

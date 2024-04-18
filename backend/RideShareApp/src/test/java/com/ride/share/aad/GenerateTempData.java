@@ -3,10 +3,10 @@ package com.ride.share.aad;
 import com.ride.share.aad.generators.ChatDataGenerator;
 import com.ride.share.aad.generators.RideDataGenerator;
 import com.ride.share.aad.generators.UserDataGenerator;
-import com.ride.share.aad.storage.dao.chat.ChatDAO;
-import com.ride.share.aad.storage.dao.chat.ChatMessageDAO;
 import com.ride.share.aad.storage.dao.RideDAO;
 import com.ride.share.aad.storage.dao.UserDAO;
+import com.ride.share.aad.storage.dao.chat.ChatDAO;
+import com.ride.share.aad.storage.dao.chat.ChatMessageDAO;
 import com.ride.share.aad.storage.entity.Ride;
 import com.ride.share.aad.storage.entity.User;
 import com.ride.share.aad.storage.entity.chat.Chat;
@@ -20,33 +20,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static java.lang.System.exit;
-
 @SpringBootApplication
 public class GenerateTempData implements CommandLineRunner {
-
-    @Autowired
-    UserDAO userDAO;
-
-    @Autowired
-    RideDAO rideDAO;
-
-    @Autowired
-    ChatDAO chatDAO;
-    @Autowired
-    ChatMessageDAO chatMessageDAO;
-
 
     public static final boolean SAVE = true;
     public static final int NO_OF_USERS = 100;
     public static final int NO_OF_RIDES = 1000;
     private static final boolean RESET_DATA = true;
-
-    public void resetData() {
-        chatDAO.deleteAll();
-        rideDAO.deleteAll();
-        userDAO.deleteAll();
-    }
+    @Autowired
+    UserDAO userDAO;
+    @Autowired
+    RideDAO rideDAO;
+    @Autowired
+    ChatDAO chatDAO;
+    @Autowired
+    ChatMessageDAO chatMessageDAO;
 
     public static long getRandomTimestampInLastTwoDaysFrom() {
         long currentTimeMillis = System.currentTimeMillis();
@@ -62,6 +50,11 @@ public class GenerateTempData implements CommandLineRunner {
         SpringApplication.run(GenerateTempData.class, args);
     }
 
+    public void resetData() {
+        chatDAO.deleteAll();
+        rideDAO.deleteAll();
+        userDAO.deleteAll();
+    }
 
     @Override
     @Transactional
@@ -71,7 +64,7 @@ public class GenerateTempData implements CommandLineRunner {
         }
         List<User> users = UserDataGenerator.generateUserData(NO_OF_USERS);
         users.add(new User("wow", "wow", "wow@gmail.edu", "123", User.Role.Rider, GenerateTempData.getRandomTimestampInLastTwoDaysFrom()));
-        users.add(new User("wow1","wow1", "wow@gmail.edu", "123", User.Role.Driver, GenerateTempData.getRandomTimestampInLastTwoDaysFrom()));
+        users.add(new User("wow1", "wow1", "wow@gmail.edu", "123", User.Role.Driver, GenerateTempData.getRandomTimestampInLastTwoDaysFrom()));
         System.out.println("Users:");
         for (User user : users) {
             System.out.println(user);

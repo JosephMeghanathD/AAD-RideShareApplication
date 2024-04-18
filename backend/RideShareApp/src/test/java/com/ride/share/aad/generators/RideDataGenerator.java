@@ -4,7 +4,6 @@ import com.github.javafaker.Faker;
 import com.ride.share.aad.GenerateTempData;
 import com.ride.share.aad.storage.entity.Ride;
 import com.ride.share.aad.storage.entity.User;
-import com.ride.share.aad.utils.entity.UserUtils;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -12,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-
-import static java.lang.System.exit;
 
 public class RideDataGenerator {
 

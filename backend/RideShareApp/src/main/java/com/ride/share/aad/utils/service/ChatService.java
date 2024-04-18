@@ -1,22 +1,17 @@
 package com.ride.share.aad.utils.service;
 
-import com.ride.share.aad.config.exceptions.InvalidAuthRequest;
-import com.ride.share.aad.storage.dao.TokenDAO;
 import com.ride.share.aad.storage.dao.UserDAO;
 import com.ride.share.aad.storage.dao.chat.ChatDAO;
 import com.ride.share.aad.storage.dao.chat.ChatMessageDAO;
-import com.ride.share.aad.storage.entity.Token;
 import com.ride.share.aad.storage.entity.User;
 import com.ride.share.aad.storage.entity.chat.Chat;
 import com.ride.share.aad.storage.entity.chat.ChatMessage;
 import com.ride.share.aad.utils.auth.RequestAuthUtils;
 import com.ride.share.aad.utils.entity.ChatUtils;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class ChatService {
@@ -57,7 +52,7 @@ public class ChatService {
     public Chat addMessage(ChatMessage chatMessage, String toUserId, String authorizationHeader) throws Exception {
         Chat chat = getChat(toUserId, authorizationHeader);
         chatMessage.setChat(chat);
-        chatMessage.setTimeStamp(System.currentTimeMillis()/1000);
+        chatMessage.setTimeStamp(System.currentTimeMillis() / 1000);
         chatMessageDAO.save(chatMessage);
         return chat;
     }

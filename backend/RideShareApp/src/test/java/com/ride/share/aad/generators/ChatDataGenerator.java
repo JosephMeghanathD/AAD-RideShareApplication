@@ -24,7 +24,7 @@ public class ChatDataGenerator {
             Chat chat = new Chat();
             chat.setChatId(ChatUtils.getChatID(user.getUserId(), user1.getUserId()));
             for (int i1 = 0; i1 < numberOfMessages; i1++) {
-                if(random.nextBoolean()) {
+                if (random.nextBoolean()) {
                     senderID = user1;
                 } else {
                     senderID = user;

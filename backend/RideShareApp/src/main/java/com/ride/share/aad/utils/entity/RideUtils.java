@@ -3,7 +3,6 @@ package com.ride.share.aad.utils.entity;
 
 import com.ride.share.aad.storage.entity.Ride;
 import com.ride.share.aad.storage.entity.User;
-import jakarta.persistence.Entity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

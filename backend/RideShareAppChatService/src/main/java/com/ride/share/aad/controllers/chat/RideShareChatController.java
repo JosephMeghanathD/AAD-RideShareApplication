@@ -10,6 +10,7 @@ import com.ride.share.aad.utils.auth.RequestAuthUtils;
 import com.ride.share.aad.utils.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,22 +37,20 @@ public class RideShareChatController {
 
     @PostMapping("/send/{toUserId}")
     @ResponseBody
-    public Chat sendMessage(@RequestBody ChatMessage chatMessage,
-                            @PathVariable("toUserId") String toUserId,
-                            @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
+    public ResponseEntity<Chat> sendMessage(@RequestBody ChatMessage chatMessage, @PathVariable("toUserId") String toUserId, @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
         Chat chat = chatService.addMessage(chatMessage, toUserId, authorizationHeader);
         Optional<Chat> byId = chatDAO.findById(chat.getChatId());
         if (byId.isPresent()) {
-            return byId.get();
+            return ResponseEntity.ok().body(byId.get());
         }
         throw new Exception("failed to get chat ID");
     }
 
     @GetMapping("/{toUserId}")
     @ResponseBody
-    public Chat getMessages(@PathVariable("toUserId") String toUserId, @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
+    public ResponseEntity<Chat> getMessages(@PathVariable("toUserId") String toUserId, @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
         Chat chat = chatService.getChat(toUserId, authorizationHeader);
-        return chat;
+        return ResponseEntity.ok().body(chat);
     }
 
 

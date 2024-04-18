@@ -34,12 +34,24 @@ public class ChatMessage {
         return fromUserId;
     }
 
+    public void setFromUserId(User fromUserId) {
+        this.fromUserId = fromUserId;
+    }
+
     public String getMessage() {
         return message;
     }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public long getTimeStamp() {
         return timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public String getChatMessageId() {
@@ -48,18 +60,6 @@ public class ChatMessage {
 
     public void setChatMessageId(String chatMessageId) {
         this.chatMessageId = chatMessageId;
-    }
-
-    public void setFromUserId(User fromUserId) {
-        this.fromUserId = fromUserId;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public void setTimeStamp(long timeStamp) {
-        this.timeStamp = timeStamp;
     }
 
     public Chat getChat() {

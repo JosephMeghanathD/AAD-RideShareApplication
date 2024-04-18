@@ -1,6 +1,7 @@
 package com.ride.share.aad.storage.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ride.share.aad.storage.entity.chat.Chat;
 import com.ride.share.aad.storage.entity.chat.ChatMessage;
 import jakarta.persistence.*;
@@ -28,6 +29,7 @@ public class User {
     private String userId;
     private String name;
     private String emailId;
+    @JsonIgnore
     private String password;
     private Role role;
     private Long lastSeen;
@@ -97,15 +99,15 @@ public class User {
         this.lastSeen = lastSeen;
     }
 
-    public enum Role {
-        Rider, Driver
-    }
-
     public List<Chat> getChats() {
         return chats;
     }
 
     public void setChats(List<Chat> chats) {
         this.chats = chats;
+    }
+
+    public enum Role {
+        Rider, Driver
     }
 }

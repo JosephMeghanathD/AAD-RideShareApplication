@@ -21,6 +21,10 @@ public class RequestAuthUtils {
     @Autowired
     TokenDAO tokenDAO;
 
+    private static String generateToken(User user) {
+        return UUID.randomUUID().toString();
+    }
+
     public Token login(JSONObject userLoginRequest, String role) throws InvalidAuthRequest {
         String userName = userLoginRequest.getString("username");
         Optional<User> user = userDAO.findByName(userName);
@@ -30,10 +34,6 @@ public class RequestAuthUtils {
             return token;
         }
         throw new InvalidAuthRequest("Invalid username or password");
-    }
-
-    private static String generateToken(User user) {
-        return UUID.randomUUID().toString();
     }
 
     public boolean isValidToken(String authorizationHeader) throws InvalidAuthRequest {
