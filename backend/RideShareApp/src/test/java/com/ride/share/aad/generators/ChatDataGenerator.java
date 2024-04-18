@@ -2,8 +2,9 @@ package com.ride.share.aad.generators;
 
 import com.github.javafaker.Faker;
 import com.ride.share.aad.storage.entity.User;
-import com.ride.share.aad.storage.entity.Chat;
-import com.ride.share.aad.utils.entity.UserUtils;
+import com.ride.share.aad.storage.entity.chat.Chat;
+import com.ride.share.aad.storage.entity.chat.ChatMessage;
+import com.ride.share.aad.utils.entity.ChatUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,16 +20,17 @@ public class ChatDataGenerator {
         for (int i = 0; i < numberOfChats; i++) {
             User user = allUsers.get(random.nextInt(allUsers.size()));
             User user1 = allUsers.get(random.nextInt(allUsers.size()));
-            String senderID;
+            User senderID;
             Chat chat = new Chat();
+            chat.setChatId(ChatUtils.getChatID(user.getUserId(), user1.getUserId()));
             for (int i1 = 0; i1 < numberOfMessages; i1++) {
                 if(random.nextBoolean()) {
-                    senderID = user1.getUserId();
+                    senderID = user1;
                 } else {
-                    senderID = user.getUserId();
+                    senderID = user;
                 }
                 String sentence = faker.lorem().sentence();
-                Chat.ChatMessage chatMessage = new Chat.ChatMessage(senderID, sentence, timeStamp + i + i1);
+                ChatMessage chatMessage = new ChatMessage(senderID, sentence, timeStamp + i + i1);
                 chat.addMessage(chatMessage);
             }
             chats.add(chat);

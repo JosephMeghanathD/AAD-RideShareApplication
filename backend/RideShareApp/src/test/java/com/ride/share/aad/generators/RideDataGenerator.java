@@ -24,6 +24,9 @@ public class RideDataGenerator {
 
         for (int i = 0; i < n; i++) {
             User randomUser = users.get(random.nextInt(users.size()));
+            if (randomUser.getLastSeen() == null) {
+                continue;
+            }
             String startingLocation = faker.address().streetAddress();
             String destination = faker.address().streetAddress();
             int numberOfPeople = faker.number().numberBetween(1, 5);
@@ -31,7 +34,7 @@ public class RideDataGenerator {
             long postedAt = GenerateTempData.getRandomTimestampInLastTwoDaysFrom(randomUser.getLastSeen());
             long timeOfRide = getRandomTimeOfRide(postedAt);
 
-            Ride ride = new Ride(startingLocation, destination, numberOfPeople, fare, timeOfRide, randomUser.getUserId(), postedAt);
+            Ride ride = new Ride(startingLocation, destination, numberOfPeople, fare, timeOfRide, randomUser, postedAt);
             rides.add(ride);
         }
         return rides;

@@ -18,7 +18,7 @@ public class RideUtils {
     public static Ride getRide(User user, JSONObject rideJson) {
         return new Ride(rideJson.getString("startingFromLocation"), rideJson.getString("destination"),
                 rideJson.getInt("numberOfPeople"), rideJson.getDouble("fare"),
-                rideJson.getLong("timeOfRide"), user.getUserId(), System.currentTimeMillis());
+                rideJson.getLong("timeOfRide"), user, System.currentTimeMillis());
     }
 
     public static JSONObject toJson(Ride ride, boolean validToken) throws JSONException {

@@ -1,12 +1,11 @@
 package com.ride.share.aad.controllers;
 
-import com.ride.share.aad.config.scurity.exceptions.InvalidAuthRequest;
-import com.ride.share.aad.storage.entity.Ride;
+import com.ride.share.aad.config.exceptions.InvalidAuthRequest;
+import com.ride.share.aad.storage.dao.RideDAO;
+import com.ride.share.aad.storage.dao.UserDAO;
 import com.ride.share.aad.storage.entity.User;
 import com.ride.share.aad.utils.auth.RequestAuthUtils;
-import com.ride.share.aad.utils.entity.RideUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +19,13 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 public class RideShareBasicController {
 
+    @Autowired
+    RequestAuthUtils requestAuthUtils;
+
     @GetMapping("/home/text")
     @ResponseBody
     public String homeText(@RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws InvalidAuthRequest {
-        User user = RequestAuthUtils.getUser(authorizationHeader);
+        User user = requestAuthUtils.getUser(authorizationHeader);
         return "This is RideShare Home, Welcome " + user.getUserId();
     }
 

@@ -24,13 +24,13 @@ public class Ride {
     long timeOfRide;
 
     @ManyToOne
-    String postedBy; // userid of the person who posted it
+    User postedBy; // userid of the person who posted it
     long postedAt; // when this ride message was posted
 
     public Ride() {
     }
 
-    public Ride(String startingFromLocation, String destination, int numberOfPeople, double fare, long timeOfRide, String postedBy, long postedAt) {
+    public Ride(String startingFromLocation, String destination, int numberOfPeople, double fare, long timeOfRide, User postedBy, long postedAt) {
         this.rideId = UUID.randomUUID().toString();
         this.startingFromLocation = startingFromLocation;
         this.destination = destination;
@@ -41,7 +41,7 @@ public class Ride {
         this.postedAt = postedAt;
     }
 
-    public Ride(String rideId, String startingFromLocation, String destination, long numberOfPeople, double fare, long timeOfRide, String postedBy, long postedAt) {
+    public Ride(String rideId, String startingFromLocation, String destination, long numberOfPeople, double fare, long timeOfRide, User postedBy, long postedAt) {
         this.rideId = rideId;
         this.startingFromLocation = startingFromLocation;
         this.destination = destination;
@@ -100,11 +100,11 @@ public class Ride {
         this.timeOfRide = timeOfRide;
     }
 
-    public String getPostedBy() {
+    public User getPostedBy() {
         return postedBy;
     }
 
-    public void setPostedBy(String postedBy) {
+    public void setPostedBy(User postedBy) {
         this.postedBy = postedBy;
     }
 

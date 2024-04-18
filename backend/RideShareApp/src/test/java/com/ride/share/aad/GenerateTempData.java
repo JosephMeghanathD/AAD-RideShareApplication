@@ -3,14 +3,17 @@ package com.ride.share.aad;
 import com.ride.share.aad.generators.ChatDataGenerator;
 import com.ride.share.aad.generators.RideDataGenerator;
 import com.ride.share.aad.generators.UserDataGenerator;
-import com.ride.share.aad.storage.dao.ChatDAO;
+import com.ride.share.aad.storage.dao.chat.ChatDAO;
+import com.ride.share.aad.storage.dao.chat.ChatMessageDAO;
 import com.ride.share.aad.storage.dao.RideDAO;
 import com.ride.share.aad.storage.dao.UserDAO;
 import com.ride.share.aad.storage.entity.Ride;
 import com.ride.share.aad.storage.entity.User;
-import com.ride.share.aad.storage.entity.Chat;
+import com.ride.share.aad.storage.entity.chat.Chat;
+import com.ride.share.aad.storage.entity.chat.ChatMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,12 +33,14 @@ public class GenerateTempData implements CommandLineRunner {
 
     @Autowired
     ChatDAO chatDAO;
+    @Autowired
+    ChatMessageDAO chatMessageDAO;
 
 
     public static final boolean SAVE = true;
     public static final int NO_OF_USERS = 100;
     public static final int NO_OF_RIDES = 1000;
-    private static final boolean RESET_DATA = false;
+    private static final boolean RESET_DATA = true;
 
     public void resetData() {
         chatDAO.deleteAll();
@@ -52,6 +57,11 @@ public class GenerateTempData implements CommandLineRunner {
         long twoDaysAgoMillis = currentTimeMillis - (86400000 * 2);
         return ThreadLocalRandom.current().nextLong(twoDaysAgoMillis, currentTimeMillis + 1);
     }
+
+    public static void main(String[] args) {
+        SpringApplication.run(GenerateTempData.class, args);
+    }
+
 
     @Override
     @Transactional
@@ -82,9 +92,12 @@ public class GenerateTempData implements CommandLineRunner {
         for (Chat chat : chats) {
             System.out.println(chat);
             if (SAVE) {
+                for (ChatMessage message : chat.getMessages()) {
+                    chatMessageDAO.save(message);
+                }
                 chatDAO.save(chat);
             }
         }
-        exit(0);
+        System.out.println("generated all data");
     }
 }

@@ -1,6 +1,8 @@
 package com.ride.share.aad.storage.entity;
 
 
+import com.ride.share.aad.storage.entity.chat.Chat;
+import com.ride.share.aad.storage.entity.chat.ChatMessage;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -16,6 +18,9 @@ public class User {
     List<Ride> rides;
     @OneToMany(cascade = CascadeType.ALL)
     List<Chat> chats;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    List<ChatMessage> chatMessages;
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
@@ -25,7 +30,7 @@ public class User {
     private String emailId;
     private String password;
     private Role role;
-    private long lastSeen;
+    private Long lastSeen;
 
 
     public User() {
@@ -84,7 +89,7 @@ public class User {
         this.role = role;
     }
 
-    public long getLastSeen() {
+    public Long getLastSeen() {
         return lastSeen;
     }
 
@@ -94,5 +99,13 @@ public class User {
 
     public enum Role {
         Rider, Driver
+    }
+
+    public List<Chat> getChats() {
+        return chats;
+    }
+
+    public void setChats(List<Chat> chats) {
+        this.chats = chats;
     }
 }
