@@ -1,4 +1,3 @@
-
 import "./App.css";
 import NavBar from "./TopBarPages/NavBar";
 import "./styles.css";

@@ -8,12 +8,10 @@ export default function NavBar() {
                 <li>
                     <a href="/contact">Contact Us</a>
                 </li>
-
                 <li>
                     <a href="/aboutus">About Us</a>
                 </li>
                 <li>
-                    
                     <a href={localStorage.getItem('jwtToken') === null ? "/login" : "/user"}><p>{localStorage.getItem('jwtToken') === null ? "Login" : "Profile"}</p></a>
                 </li>
             </ul>

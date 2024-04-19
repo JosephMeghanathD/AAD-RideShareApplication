@@ -46,9 +46,8 @@ const RideList = ({forUser}) => {
         console.error('Error fetching rides data:', error);
       }
     };
-
     fetchData();
-  }, []);
+  }, [forUser]);
 
   const handleSort = (key) => {
     if (sortBy === key) {
