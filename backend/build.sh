@@ -18,5 +18,6 @@ cd ./RideShareAppRideService || exit
 cd ..
 
 
+docker-compose down --rmi all --volumes --remove-orphans auth-service ride-service chat-service
 docker-compose build
 docker-compose up -d

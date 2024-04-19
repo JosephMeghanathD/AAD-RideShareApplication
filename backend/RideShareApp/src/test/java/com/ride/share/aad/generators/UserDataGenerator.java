@@ -1,6 +1,7 @@
-package com.ride.share.util.generators;
+package com.ride.share.aad.generators;
 
 import com.github.javafaker.Faker;
+import com.ride.share.aad.GenerateTempData;
 import com.ride.share.aad.storage.entity.User;
 
 import java.util.ArrayList;
@@ -8,23 +9,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.ride.share.util.generators.GenerateTempData.getRandomTimestampInLastTwoDaysFrom;
-import static java.lang.System.exit;
 
 public class UserDataGenerator {
 
     private static final Faker faker = new Faker();
     private static final Set<String> usedUserIds = new HashSet<>();
-
-    public static void main(String[] args) {
-        int n = 100; // Number of records to generate
-        User.DEV = true;
-        List<User> users = generateUserData(n);
-        for (User user : users) {
-            System.out.println(user);
-        }
-        exit(0);
-    }
 
     public static List<User> generateUserData(int n) {
         List<User> users = new ArrayList<>();
@@ -43,7 +32,7 @@ public class UserDataGenerator {
         User.Role role = faker.random().nextBoolean() ? User.Role.Rider : User.Role.Driver;
         long lastSeen = GenerateTempData.getRandomTimestampInLastTwoDaysFrom();
 
-        return new User(userId, name, emailId, role, lastSeen, password);
+        return new User(userId, name, emailId, password, role, lastSeen);
     }
 
     private static String generateUniqueUserId(String name) {
@@ -51,7 +40,7 @@ public class UserDataGenerator {
         String fn = nameParts[0];
         String ln = nameParts[nameParts.length - 1];
 
-        String one = fn.substring(0, (int) (Math.random() * (fn.length()))  + 1);
+        String one = fn.substring(0, (int) (Math.random() * (fn.length())) + 1);
         String two = getRandomIds(0, 3);
         String three = "";
         if (ln.length() >= 3) {

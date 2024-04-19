@@ -80,18 +80,18 @@ const ChatBox = ({ chatID }) => {
         <div className="chat-messages">
           {isLoading && <p>Loading...</p>}
           {data.messages && data.messages.map((message) => (
-            (message.fromUserId === localStorage.getItem("currentUser")) ?
+            (message.fromUserId.name === localStorage.getItem("currentUser")) ?
               <div className='right-content'>
                 {message.message}
                 <p className='small-info'>
-                  <p>{message.fromUserId}</p>
+                  <p>{message.fromUserId.name}</p>
                   <p>{new Date(message.timeStamp * 1000).toLocaleString()}</p>
                 </p>
               </div>
               :
               <div className='left-content'>
                 <p className='small-info'>
-                  <p>{message.fromUserId}</p>
+                  <p>{message.fromUserId.name}</p>
                   <p>{new Date(message.timeStamp * 1000).toLocaleString()}</p>
                 </p>
                 {message.message}

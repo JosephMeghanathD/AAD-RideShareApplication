@@ -24,9 +24,8 @@ const Login = () => {
           username,
           password
         });
-        console.log(response);
-        localStorage.setItem("jwtToken", response.data);
-        localStorage.setItem("currentUser", username);
+        localStorage.setItem("jwtToken", response.data.jwtToken);
+        localStorage.setItem("currentUser", response.data.user.name);
         window.location.href = "./home";
       } catch (error) {
         console.error('Error fetching data:', error);

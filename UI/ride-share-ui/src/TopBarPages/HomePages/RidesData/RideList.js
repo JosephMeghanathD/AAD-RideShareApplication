@@ -11,7 +11,7 @@ const RideList = ({forUser}) => {
 
   const [error, setError] = useState(null);
   
-  const [data, setData] = useState({rides:[]});
+  const [data, setData] = useState([]);
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
 
   useEffect(() => {
@@ -73,9 +73,9 @@ const RideList = ({forUser}) => {
     setCurrentPage(pageNumber);
   };
 
-  const sortedRides = [...data.rides].sort((a, b) => {
-    const valueA = typeof a[sortBy] === 'string' ? a[sortBy].toLowerCase() : a[sortBy];
-    const valueB = typeof b[sortBy] === 'string' ? b[sortBy].toLowerCase() : b[sortBy];
+  const sortedRides = [...data].sort((a, b) => {
+    const valueA = typeof a[sortBy] === 'string' ? a[sortBy].toLowerCase() : a[sortBy].name;
+    const valueB = typeof b[sortBy] === 'string' ? b[sortBy].toLowerCase() : b[sortBy].name;
 
     if (sortOrder === 'asc') {
       if (valueA < valueB) return -1;

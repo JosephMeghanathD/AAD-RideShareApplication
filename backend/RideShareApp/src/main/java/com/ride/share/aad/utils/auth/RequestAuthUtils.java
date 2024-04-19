@@ -1,41 +1,55 @@
 package com.ride.share.aad.utils.auth;
 
-import com.ride.share.aad.config.scurity.exceptions.InvalidAuthRequest;
+import com.ride.share.aad.config.exceptions.InvalidAuthRequest;
+import com.ride.share.aad.storage.dao.TokenDAO;
+import com.ride.share.aad.storage.dao.UserDAO;
 import com.ride.share.aad.storage.entity.Token;
 import com.ride.share.aad.storage.entity.User;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
+@Service
 public class RequestAuthUtils {
 
-    public static String login(JSONObject userLoginRequest, String role) throws InvalidAuthRequest {
-        User user = new User(userLoginRequest.getString("username"));
-        if (user.validate(userLoginRequest.getString("password"))) {
-            Token token = new Token(user.getUserId(), generateToken(user), Token.UserRole.valueOf(role));
-            token.save();
-            return token.getJwtToken();
-        }
-        throw new InvalidAuthRequest("Invalid username or password");
-    }
+    @Autowired
+    UserDAO userDAO;
+
+    @Autowired
+    TokenDAO tokenDAO;
 
     private static String generateToken(User user) {
         return UUID.randomUUID().toString();
     }
 
-    public static boolean isValidToken(String authorizationHeader) throws InvalidAuthRequest {
-        Token t = new Token(authorizationHeader);
-        if (t.getUserRole() == null) {
-            return false;
+    public Token login(JSONObject userLoginRequest, String role) throws InvalidAuthRequest {
+        String userName = userLoginRequest.getString("username");
+        Optional<User> user = userDAO.findByName(userName);
+        if (user.isPresent() && user.get().validate(userLoginRequest.getString("password"))) {
+            user.get().setLastSeen(System.currentTimeMillis());
+            userDAO.save(user.get());
+            Token token = new Token(user.get(), generateToken(user.get()), Token.UserRole.valueOf(role));
+            tokenDAO.save(token);
+            return token;
         }
-        return true;
+        throw new InvalidAuthRequest("Invalid username or password");
     }
 
-    public static User getUser(String authorizationHeader) throws InvalidAuthRequest {
-        Token t = new Token(authorizationHeader);
-        if (t.getUserRole() == null) {
+    public boolean isValidToken(String authorizationHeader) throws InvalidAuthRequest {
+        Optional<Token> t = tokenDAO.findByJwtToken(authorizationHeader);
+        return t.isPresent();
+    }
+
+    public User getUser(String authorizationHeader) throws InvalidAuthRequest {
+        Optional<Token> t = tokenDAO.findByJwtToken(authorizationHeader);
+        if (t.isEmpty()) {
             throw new InvalidAuthRequest("Invalid auth");
         }
-        return new User(t.getUserId());
+        t.get().getUser().setLastSeen(System.currentTimeMillis());
+        userDAO.save(t.get().getUser());
+        return t.get().getUser();
     }
 }

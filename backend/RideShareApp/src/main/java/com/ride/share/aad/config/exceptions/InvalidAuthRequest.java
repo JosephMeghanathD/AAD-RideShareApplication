@@ -1,4 +1,4 @@
-package com.ride.share.aad.config.scurity.exceptions;
+package com.ride.share.aad.config.exceptions;
 
 public class InvalidAuthRequest extends Exception {
     private final String message;

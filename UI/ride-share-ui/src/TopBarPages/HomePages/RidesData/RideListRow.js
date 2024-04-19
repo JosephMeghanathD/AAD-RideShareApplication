@@ -32,12 +32,12 @@ const RideListRow = ({ ride }) => {
               <td>{ride.numberOfPeople}</td>
               <td>{ride.fare}</td>
               <td>{new Date(ride.timeOfRide).toLocaleString()}</td>
-              {localStorage.getItem('jwtToken') !== null && <td>{ride.postedBy}</td>}
+              {localStorage.getItem('jwtToken') !== null && <td>{ride.postedBy.name}</td>}
               <td>{new Date(ride.postedAt).toLocaleString()}</td>
               <td>
-                {localStorage.getItem('jwtToken') !== null && localStorage.getItem("currentUser") !== ride.postedBy && <button onClick={() => window.location.href = `/chat?activechat=${ride.postedBy}`}>Chat</button>}
-                {localStorage.getItem('jwtToken') !== null && localStorage.getItem("currentUser") === ride.postedBy && <button onClick={() => window.location.href = `/create-ride?rideId=${ride.rideId}`}>Edit</button>}
-                {localStorage.getItem('jwtToken') !== null && localStorage.getItem("currentUser") === ride.postedBy && <button onClick={handleDelete}>Delete</button>}
+                {localStorage.getItem('jwtToken') !== null && localStorage.getItem("currentUser") !== ride.postedBy.name && <button onClick={() => window.location.href = `/chat?activechat=${ride.postedBy.name}`}>Chat</button>}
+                {localStorage.getItem('jwtToken') !== null && localStorage.getItem("currentUser") === ride.postedBy.name && <button onClick={() => window.location.href = `/create-ride?rideId=${ride.rideId}`}>Edit</button>}
+                {localStorage.getItem('jwtToken') !== null && localStorage.getItem("currentUser") === ride.postedBy.name && <button onClick={handleDelete}>Delete</button>}
               </td>
             </tr>
   );
