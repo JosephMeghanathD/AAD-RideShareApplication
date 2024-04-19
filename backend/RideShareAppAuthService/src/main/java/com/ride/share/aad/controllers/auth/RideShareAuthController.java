@@ -33,8 +33,7 @@ public class RideShareAuthController {
 
     @GetMapping("/get/{userID}")
     @ResponseBody
-    public ResponseEntity<User> getUser(@PathVariable("userID") String userID,
-                                        @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
+    public ResponseEntity<User> getUser(@PathVariable("userID") String userID, @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
         User user = requestAuthUtils.getUser(authorizationHeader);
         return ResponseEntity.ok().body(user);
     }

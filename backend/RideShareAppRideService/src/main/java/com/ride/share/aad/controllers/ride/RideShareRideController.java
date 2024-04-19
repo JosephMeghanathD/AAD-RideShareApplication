@@ -6,6 +6,7 @@ import com.ride.share.aad.storage.dao.RideDAO;
 import com.ride.share.aad.storage.entity.Ride;
 import com.ride.share.aad.storage.entity.User;
 import com.ride.share.aad.utils.auth.RequestAuthUtils;
+import com.ride.share.aad.utils.service.RideService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +32,12 @@ public class RideShareRideController {
     @Autowired
     RideDAO rideDAO;
 
+    @Autowired
+    RideService rideService;
+
     @PostMapping("/post")
     @ResponseBody
-    public ResponseEntity<Ride> postRide(@RequestBody Ride ride,
-                                         @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
+    public ResponseEntity<Ride> postRide(@RequestBody Ride ride, @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
         User user = requestAuthUtils.getUser(authorizationHeader);
         ride.setPostedBy(user); // Set the user who posted the ride
         return ResponseEntity.ok().body(rideDAO.save(ride));
@@ -42,8 +45,7 @@ public class RideShareRideController {
 
     @GetMapping("/{rideId}")
     @ResponseBody
-    public ResponseEntity<Ride> getRide(@PathVariable String rideId,
-                                        @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
+    public ResponseEntity<Ride> getRide(@PathVariable String rideId, @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
         User user = requestAuthUtils.getUser(authorizationHeader);
         Optional<Ride> optionalRide = rideDAO.findById(rideId);
         return optionalRide.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -51,20 +53,11 @@ public class RideShareRideController {
 
     @PutMapping("/{rideId}")
     @ResponseBody
-    public ResponseEntity<Ride> editRide(@PathVariable String rideId, @RequestBody Ride updatedRide,
-                                         @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
+    public ResponseEntity<Ride> editRide(@PathVariable String rideId, @RequestBody Ride updatedRide, @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
         User user = requestAuthUtils.getUser(authorizationHeader);
         Optional<Ride> optionalRide = rideDAO.findById(rideId);
         if (optionalRide.isPresent()) {
-            Ride existingRide = optionalRide.get();
-            // Update the existing ride properties
-            existingRide.setStartingFromLocation(updatedRide.getStartingFromLocation());
-            existingRide.setDestination(updatedRide.getDestination());
-            existingRide.setNumberOfPeople(updatedRide.getNumberOfPeople());
-            existingRide.setFare(updatedRide.getFare());
-            existingRide.setTimeOfRide(updatedRide.getTimeOfRide());
-            // Save the updated ride
-            Ride savedRide = rideDAO.save(existingRide);
+            Ride savedRide = rideService.editRide(updatedRide, optionalRide);
             return ResponseEntity.ok(savedRide);
         } else {
             return ResponseEntity.notFound().build();
@@ -118,16 +111,13 @@ public class RideShareRideController {
     }
 
     @GetMapping("/rides")
-    public ResponseEntity<List<Ride>> getRides(@RequestParam(defaultValue = "1") int page,
-                                               @RequestParam(defaultValue = "timeOfRide") String sortBy,
-                                               @RequestParam(defaultValue = "asc") String sortOrder,
-                                               @RequestHeader(name = "Authorization", required = false) @DefaultValue("XXX") String authorizationHeader) throws InvalidAuthRequest {
+    public ResponseEntity<List<Ride>> getRides(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "timeOfRide") String sortBy, @RequestParam(defaultValue = "asc") String sortOrder, @RequestHeader(name = "Authorization", required = false) @DefaultValue("XXX") String authorizationHeader) throws InvalidAuthRequest {
         try {
             User user = requestAuthUtils.getUser(authorizationHeader);
             return ResponseEntity.ok().body(rideDAO.findAll());
         } catch (InvalidAuthRequest iae) {
-            List<Ride> ridesWithoutPostedBy = rideDAO.findAll();
-            ridesWithoutPostedBy.forEach(ride -> ride.setPostedBy(null));
+            logger.error("Failed to get rides posted data {}", iae.getMessage(), iae);
+            List<Ride> ridesWithoutPostedBy = rideService.getRidesWithoutPostedBy();
             return ResponseEntity.ok().body(ridesWithoutPostedBy);
         } catch (Exception e) {
             logger.error("Failed to get rides {}", e.getMessage(), e);

@@ -31,7 +31,10 @@ public class ChatDataGenerator {
                 }
                 String sentence = faker.lorem().sentence();
                 ChatMessage chatMessage = new ChatMessage(senderID, sentence, timeStamp + i + i1);
+                chatMessage.setFromUserId(senderID);
                 chat.addMessage(chatMessage);
+                chat.setUserID2(user1);
+                chat.setUserID1(user);
             }
             chats.add(chat);
         }

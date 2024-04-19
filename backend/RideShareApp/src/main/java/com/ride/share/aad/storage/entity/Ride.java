@@ -9,9 +9,6 @@ import java.util.UUID;
 @Table(name = "rides")
 public class Ride {
 
-    public static final String RIDES_TABLE = "rides";
-
-
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")

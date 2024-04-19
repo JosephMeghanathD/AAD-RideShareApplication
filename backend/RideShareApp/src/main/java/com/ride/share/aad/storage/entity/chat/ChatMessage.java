@@ -1,5 +1,6 @@
 package com.ride.share.aad.storage.entity.chat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ride.share.aad.storage.entity.User;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -20,9 +21,13 @@ public class ChatMessage {
     @ManyToOne
     User fromUserId;
     String message;
-    long timeStamp;
+    Long timeStamp;
+    @JsonIgnore
     @ManyToOne
     Chat chat;
+
+    public ChatMessage() {
+    }
 
     public ChatMessage(User fromUserId, String message, long timeStamp) {
         this.fromUserId = fromUserId;
@@ -46,7 +51,7 @@ public class ChatMessage {
         this.message = message;
     }
 
-    public long getTimeStamp() {
+    public Long getTimeStamp() {
         return timeStamp;
     }
 

@@ -21,8 +21,8 @@ public class Chat {
     @ManyToOne
     User userID2;
 
-    @OneToMany
-    List<ChatMessage> messages = new ArrayList<>();
+    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<ChatMessage> messages;
 
     public Chat() {
     }
@@ -67,6 +67,9 @@ public class Chat {
     }
 
     public Chat addMessage(ChatMessage message) {
+        if (messages == null) {
+            messages = new ArrayList<>();
+        }
         messages.add(message);
         return this;
     }

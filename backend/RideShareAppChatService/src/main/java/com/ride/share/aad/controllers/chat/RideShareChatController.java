@@ -13,6 +13,8 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,11 +25,6 @@ public class RideShareChatController {
 
     @Autowired
     ChatDAO chatDAO;
-    @Autowired
-    ChatMessageDAO chatMessageDAO;
-
-    @Autowired
-    UserDAO userDAO;
 
     @Autowired
     RequestAuthUtils requestAuthUtils;
@@ -41,6 +38,7 @@ public class RideShareChatController {
         Chat chat = chatService.addMessage(chatMessage, toUserId, authorizationHeader);
         Optional<Chat> byId = chatDAO.findById(chat.getChatId());
         if (byId.isPresent()) {
+            byId.get().getMessages().sort(Comparator.comparing(ChatMessage::getTimeStamp));
             return ResponseEntity.ok().body(byId.get());
         }
         throw new Exception("failed to get chat ID");
@@ -50,15 +48,18 @@ public class RideShareChatController {
     @ResponseBody
     public ResponseEntity<Chat> getMessages(@PathVariable("toUserId") String toUserId, @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
         Chat chat = chatService.getChat(toUserId, authorizationHeader);
+        chat.getMessages().sort(Comparator.comparing(ChatMessage::getTimeStamp));
         return ResponseEntity.ok().body(chat);
     }
 
 
     @GetMapping("/conversations")
     @ResponseBody
-    public List<Chat> getAllChats(@RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
+    public ResponseEntity<List<Chat>> getAllChats(@RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
         User user = requestAuthUtils.getUser(authorizationHeader);
-        return user.getChats();
+        List<Chat> mergedList = new ArrayList<>(user.getChatsWithUserID1());
+        mergedList.addAll(user.getChatsWithUserID2());
+        return ResponseEntity.ok().body(mergedList);
     }
 
 

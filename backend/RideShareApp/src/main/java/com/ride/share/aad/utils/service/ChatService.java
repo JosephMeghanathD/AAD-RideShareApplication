@@ -31,15 +31,20 @@ public class ChatService {
 
     public Chat getChat(String toUserId, String authorizationHeader) throws Exception {
         User user = requestAuthUtils.getUser(authorizationHeader);
-        Optional<User> toUser = userDAO.findById(toUserId);
+        return getChat(toUserId, user);
+    }
+
+    private Chat getChat(String toUserId, User user) throws Exception {
+        Optional<User> toUser = userDAO.findByName(toUserId);
         if (toUser.isEmpty()) {
             throw new Exception("Invalid to user id");
         }
-        String chatID = ChatUtils.getChatID(toUser.get().getName(), user.getName());
+        String chatID = ChatUtils.getChatID(toUser.get().getUserId(), user.getUserId());
         Optional<Chat> optionalChat = chatDAO.findById(chatID);
         Chat chat;
         if (optionalChat.isEmpty()) {
             chat = new Chat();
+            chat.setChatId(ChatUtils.getChatID(user.getUserId(), toUser.get().getUserId()));
             chat.setUserID1(user);
             chat.setUserID2(toUser.get());
             chatDAO.save(chat);
@@ -50,8 +55,10 @@ public class ChatService {
     }
 
     public Chat addMessage(ChatMessage chatMessage, String toUserId, String authorizationHeader) throws Exception {
-        Chat chat = getChat(toUserId, authorizationHeader);
+        User user = requestAuthUtils.getUser(authorizationHeader);
+        Chat chat = getChat(toUserId, user);
         chatMessage.setChat(chat);
+        chatMessage.setFromUserId(user);
         chatMessage.setTimeStamp(System.currentTimeMillis() / 1000);
         chatMessageDAO.save(chatMessage);
         return chat;

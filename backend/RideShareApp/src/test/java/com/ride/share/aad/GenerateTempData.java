@@ -51,6 +51,7 @@ public class GenerateTempData implements CommandLineRunner {
     }
 
     public void resetData() {
+        chatMessageDAO.deleteAll();
         chatDAO.deleteAll();
         rideDAO.deleteAll();
         userDAO.deleteAll();
@@ -85,10 +86,12 @@ public class GenerateTempData implements CommandLineRunner {
         for (Chat chat : chats) {
             System.out.println(chat);
             if (SAVE) {
+                chatDAO.save(chat);
+                chat = chatDAO.findById(chat.getChatId()).get();
                 for (ChatMessage message : chat.getMessages()) {
+                    message.setChat(chat);
                     chatMessageDAO.save(message);
                 }
-                chatDAO.save(chat);
             }
         }
         System.out.println("generated all data");

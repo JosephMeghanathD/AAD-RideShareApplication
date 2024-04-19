@@ -29,6 +29,8 @@ public class RequestAuthUtils {
         String userName = userLoginRequest.getString("username");
         Optional<User> user = userDAO.findByName(userName);
         if (user.isPresent() && user.get().validate(userLoginRequest.getString("password"))) {
+            user.get().setLastSeen(System.currentTimeMillis());
+            userDAO.save(user.get());
             Token token = new Token(user.get(), generateToken(user.get()), Token.UserRole.valueOf(role));
             tokenDAO.save(token);
             return token;
@@ -46,6 +48,8 @@ public class RequestAuthUtils {
         if (t.isEmpty()) {
             throw new InvalidAuthRequest("Invalid auth");
         }
+        t.get().getUser().setLastSeen(System.currentTimeMillis());
+        userDAO.save(t.get().getUser());
         return t.get().getUser();
     }
 }
