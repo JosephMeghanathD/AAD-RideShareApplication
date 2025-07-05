@@ -9,7 +9,7 @@
 **Connect. Share. Travel Sustainably.**  
 A privacy-first ride-sharing platform for students, professionals, and travelers to split costs, reduce emissions, and build community.  
 
-👉 **Live Demo**: *Coming Soon!*  
+👉 **Live Demo**: [https://jdride.netlify.app/](https://jdride.netlify.app/)  
 🔗 **GitHub Repository**: [https://github.com/JoeHitHard/AAD-RideShareApplication](https://github.com/JoeHitHard/AAD-RideShareApplication)
 
 ---
