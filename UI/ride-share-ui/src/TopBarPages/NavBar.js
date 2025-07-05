@@ -1,20 +1,23 @@
-import "./NavBar.css"
-export default function NavBar() {
+import "./NavBar.css";
+import { Link } from "react-router-dom";
 
-    return (
-        <nav className="nav">
-            <a href="/" className="site-title"> RideShare</a>
-            <ul>
-                <li>
-                    <a href="/contact">Contact Us</a>
-                </li>
-                <li>
-                    <a href="/aboutus">About Us</a>
-                </li>
-                <li>
-                    <a href={localStorage.getItem('jwtToken') === null ? "/login" : "/user"}><p>{localStorage.getItem('jwtToken') === null ? "Login" : "Profile"}</p></a>
-                </li>
-            </ul>
-        </nav>
-    ); 
+export default function NavBar() {
+  return (
+    <nav className="nav">
+      <Link to="/" className="site-title">RideShare</Link>
+      <ul>
+        <li>
+          <Link to="/contact">Contact Us</Link>
+        </li>
+        <li>
+          <Link to="/aboutus">About Us</Link>
+        </li>
+        <li>
+          <Link to={localStorage.getItem('jwtToken') === null ? "/login" : "/user"}>
+            {localStorage.getItem('jwtToken') === null ? "Login" : "Profile"}
+          </Link>
+        </li>
+      </ul>
+    </nav>
+  );
 }

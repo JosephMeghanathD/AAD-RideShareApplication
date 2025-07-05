@@ -9,38 +9,24 @@ import Chat from "./TopBarPages/Chat/Chat";
 import UserProfile from "./TopBarPages/Profile/UserProfile";
 import CreateRideForm from "./TopBarPages/HomePages/RidesData/CreateRide/CreateRide";
 
+import { Routes, Route } from "react-router-dom";
+
 function App() {
-    let Component = Home;
-    switch (window.location.pathname) {
-        case "/":
-            Component = Home;
-            break;
-        case "/contact":
-            Component = ContactUs;
-            break;
-        case "/aboutus":
-            Component = AboutUs;
-            break;
-        case "/login":
-            Component = AuthExtraction;
-            break;
-        case "/chat":
-            Component = Chat;
-            break;
-        case "/user":
-            Component = UserProfile;
-            break;
-        case "/create-ride":
-            Component = CreateRideForm;
-            break;
-        default:
-            Component = Home;
-            break;
-    }
-    return <div>
-        <NavBar />
-        <Component />
-    </div>;
+  return (
+    <div>
+      <NavBar />
+      {/* The Routes component will render the correct Route based on the URL */}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/aboutus" element={<AboutUs />} />
+        <Route path="/login" element={<AuthExtraction />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/user" element={<UserProfile />} />
+        <Route path="/create-ride" element={<CreateRideForm />} />
+      </Routes>
+    </div>
+  );
 }
 
 export default App;

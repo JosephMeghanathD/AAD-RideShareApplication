@@ -5,3 +5,8 @@
 
 [[plugins]]
     package = "netlify-plugin-cache-nextjs"
+
+[[redirects]]
+    from = "/*"
+    to = "/index.html"
+    status = 200
