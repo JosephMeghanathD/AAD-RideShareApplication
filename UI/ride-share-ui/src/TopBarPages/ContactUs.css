@@ -1,0 +1,130 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat:500");
+
+/* This will be the main container for the form, creating the centered card effect */
+.contact-form-container {
+    /* Using a flexbox approach for centering which is more modern than absolute positioning */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f2f5; /* A light background for contrast */
+    font-family: "Montserrat", sans-serif;
+}
+
+/* The form itself */
+.contact-form {
+    width: 90%;
+    max-width: 500px; /* Max width for larger screens */
+    padding: 2.5rem;
+    background-color: #FFF;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.contact-form legend {
+    width: 100%;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 500;
+    padding-bottom: 1.5rem;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+/* Label styles */
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+/* Input and Textarea styles from the provided CSS */
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    background-color: #f7f5f3;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: black;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+}
+
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Button styles from the provided CSS */
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 1rem;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+.submit-btn:hover {
+    background-color: #333;
+}
+
+.submit-btn:active {
+    transform: scale(0.98);
+}
+
+.submit-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* --- New styles required for feedback --- */
+
+/* Text for displaying validation errors below the input */
+.error-text {
+    color: #e74c3c;
+    font-size: 0.8rem;
+    margin-top: 4px;
+}
+
+/* General container for response messages (success or error) */
+.response-message {
+    padding: 1rem;
+    border-radius: 5px;
+    margin-top: 1.5rem;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Specific style for a success message */
+.response-message.success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+/* Specific style for an error message */
+.response-message.error {
+    background-color: #ffebee;
+    color: #c62828;
+}
