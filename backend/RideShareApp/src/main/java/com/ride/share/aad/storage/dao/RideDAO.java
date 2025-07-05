@@ -38,5 +38,5 @@ public interface RideDAO extends JpaRepository<Ride, String> {
      * @param userId the user ID to search for
      * @return a list of rides posted by the user with the specified user ID
      */
-    List<Ride> findByPostedByUserId(String userId);
+    Page<Ride> findByPostedByUserId(String userId, Pageable pageable);
 }

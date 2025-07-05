@@ -11,7 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.DefaultValue;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
@@ -69,9 +72,16 @@ public class RideShareRideController {
 
     @GetMapping("/by/user")
     @ResponseBody
-    public ResponseEntity<List<Ride>> getUserPostedRides(@RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
+    public ResponseEntity<Page<Ride>> getUserPostedRides(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "timeOfRide") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortOrder,
+            @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
         User user = requestAuthUtils.getUser(authorizationHeader);
-        return ResponseEntity.ok().body(rideDAO.findByPostedByUserId(user.getUserId()));
+        Sort sort = Sort.by(Sort.Direction.fromString(sortOrder), sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return ResponseEntity.ok().body(rideDAO.findByPostedByUserId(user.getUserId(), pageable));
     }
 
     /**
