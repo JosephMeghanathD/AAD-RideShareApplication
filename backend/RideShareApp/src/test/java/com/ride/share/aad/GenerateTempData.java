@@ -24,9 +24,11 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GenerateTempData implements CommandLineRunner {
 
     public static final boolean SAVE = true;
-    public static final int NO_OF_USERS = 100;
-    public static final int NO_OF_RIDES = 1000;
+    public static final int NO_OF_USERS = 10;
+    public static final int NO_OF_RIDES = 100;
     private static final boolean RESET_DATA = true;
+    public static final int NUMBER_OF_MESSAGES = 40;
+    public static final int NUMBER_OF_CHATS = 11;
     @Autowired
     UserDAO userDAO;
     @Autowired
@@ -82,7 +84,7 @@ public class GenerateTempData implements CommandLineRunner {
             }
         }
 
-        List<Chat> chats = ChatDataGenerator.generateRandomConversations(SAVE ? userDAO.findAll() : users, 110, 40);
+        List<Chat> chats = ChatDataGenerator.generateRandomConversations(SAVE ? userDAO.findAll() : users, NUMBER_OF_CHATS, NUMBER_OF_MESSAGES);
         for (Chat chat : chats) {
             System.out.println(chat);
             if (SAVE) {
@@ -94,6 +96,7 @@ public class GenerateTempData implements CommandLineRunner {
                 }
             }
         }
+
         System.out.println("generated all data");
     }
 }

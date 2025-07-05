@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
@@ -45,8 +46,7 @@ public class RideShareRideController {
 
     @GetMapping("/{rideId}")
     @ResponseBody
-    public ResponseEntity<Ride> getRide(@PathVariable String rideId, @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
-        User user = requestAuthUtils.getUser(authorizationHeader);
+    public ResponseEntity<Ride> getRide(@PathVariable String rideId) throws Exception {
         Optional<Ride> optionalRide = rideDAO.findById(rideId);
         return optionalRide.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -57,6 +57,9 @@ public class RideShareRideController {
         User user = requestAuthUtils.getUser(authorizationHeader);
         Optional<Ride> optionalRide = rideDAO.findById(rideId);
         if (optionalRide.isPresent()) {
+            if (!optionalRide.get().getPostedBy().getUserId().equals(user.getUserId())) {
+                throw new RuntimeException("You are not authorized to edit this ride");
+            }
             Ride savedRide = rideService.editRide(updatedRide, optionalRide);
             return ResponseEntity.ok(savedRide);
         } else {
@@ -71,28 +74,80 @@ public class RideShareRideController {
         return ResponseEntity.ok().body(rideDAO.findByPostedByUserId(user.getUserId()));
     }
 
-    @PostMapping("/by/destination")
-    @ResponseBody
-    public ResponseEntity<List<Ride>> getRidesByDestination(@RequestBody String searchString, @RequestHeader(name = "Authorization", required = false) @DefaultValue("XXX") String authorizationHeader) throws Exception {
+    /**
+     * GET /by/destination
+     *
+     * Returns a paginated list of rides with the given destination.
+     *
+     * @param destination the destination to search for
+     * @param page the page number to return (0-based)
+     * @param size the number of items per page
+     * @param sortBy the field to sort the results by
+     * @param sortOrder the order to sort the results by
+     * @param authorizationHeader the authorization header to check for authentication
+     *
+     * @return a paginated list of rides with the given destination
+     *
+     * @throws InvalidAuthRequest if the authorization header is invalid
+     */
+    @GetMapping("/by/destination") // Changed from POST to GET
+    public ResponseEntity<Page<Ride>> getRidesByDestination(
+            @RequestParam String destination, // Changed from @RequestBody to @RequestParam
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "timeOfRide") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortOrder,
+            @RequestHeader(name = "Authorization", required = false) @DefaultValue("XXX") String authorizationHeader) {
+
+        // 1. Create Pageable object for pagination and sorting
+        Sort sort = Sort.by(Sort.Direction.fromString(sortOrder), sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
         try {
+            // Authenticated users get the full data
             User user = requestAuthUtils.getUser(authorizationHeader);
-            return ResponseEntity.ok().body(rideDAO.findByDestinationContainingIgnoreCase(searchString));
+            Page<Ride> ridesPage = rideDAO.findByDestinationContainingIgnoreCase(destination, pageable);
+            return ResponseEntity.ok().body(ridesPage);
         } catch (InvalidAuthRequest e) {
-            List<Ride> ridesWithoutPostedBy = rideDAO.findByDestinationContainingIgnoreCase(searchString);
-            ridesWithoutPostedBy.forEach(ride -> ride.setPostedBy(null));
+            // Unauthenticated users get data with 'postedBy' field nulled out
+            Page<Ride> ridesPage = rideDAO.findByDestinationContainingIgnoreCase(destination, pageable);
+
+            // 2. Use page.map() to transform the content while preserving pagination details
+            Page<Ride> ridesWithoutPostedBy = ridesPage.map(ride -> {
+                ride.setPostedBy(null);
+                return ride;
+            });
             return ResponseEntity.ok().body(ridesWithoutPostedBy);
         }
     }
 
-    @PostMapping("/by/source")
-    @ResponseBody
-    public ResponseEntity<List<Ride>> getRidesBySource(@RequestBody String searchString, @RequestHeader(name = "Authorization", required = false) @DefaultValue("XXX") String authorizationHeader) throws Exception {
+    @GetMapping("/by/source") // Changed from POST to GET
+    public ResponseEntity<Page<Ride>> getRidesBySource(
+            @RequestParam String source, // Changed from @RequestBody to @RequestParam and renamed
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "timeOfRide") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortOrder,
+            @RequestHeader(name = "Authorization", required = false) @DefaultValue("XXX") String authorizationHeader) {
+
+        // 1. Create Pageable object
+        Sort sort = Sort.by(Sort.Direction.fromString(sortOrder), sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
         try {
+            // Authenticated users get the full data
             User user = requestAuthUtils.getUser(authorizationHeader);
-            return ResponseEntity.ok().body(rideDAO.findByStartingFromLocationContainingIgnoreCase(searchString));
+            Page<Ride> ridesPage = rideDAO.findByStartingFromLocationContainingIgnoreCase(source, pageable);
+            return ResponseEntity.ok().body(ridesPage);
         } catch (InvalidAuthRequest e) {
-            List<Ride> ridesWithoutPostedBy = rideDAO.findByStartingFromLocationContainingIgnoreCase(searchString);
-            ridesWithoutPostedBy.forEach(ride -> ride.setPostedBy(null));
+            // Unauthenticated users get data with 'postedBy' field nulled out
+            Page<Ride> ridesPage = rideDAO.findByStartingFromLocationContainingIgnoreCase(source, pageable);
+
+            // 2. Use page.map() to transform the content
+            Page<Ride> ridesWithoutPostedBy = ridesPage.map(ride -> {
+                ride.setPostedBy(null);
+                return ride;
+            });
             return ResponseEntity.ok().body(ridesWithoutPostedBy);
         }
     }
@@ -111,14 +166,26 @@ public class RideShareRideController {
     }
 
     @GetMapping("/rides")
-    public ResponseEntity<List<Ride>> getRides(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "timeOfRide") String sortBy, @RequestParam(defaultValue = "asc") String sortOrder, @RequestHeader(name = "Authorization", required = false) @DefaultValue("XXX") String authorizationHeader) throws InvalidAuthRequest {
+    public ResponseEntity<Page<Ride>> getRides(
+            @RequestParam(defaultValue = "0") int page, // Page numbers are 0-based in Spring Data
+            @RequestParam(defaultValue = "10") int size, // Add a size parameter for page size
+            @RequestParam(defaultValue = "timeOfRide") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortOrder,
+            @RequestHeader(name = "Authorization", required = false) @DefaultValue("XXX") String authorizationHeader) throws InvalidAuthRequest {
+
+        Sort sort = Sort.by(Sort.Direction.fromString(sortOrder), sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
         try {
             User user = requestAuthUtils.getUser(authorizationHeader);
-            return ResponseEntity.ok().body(rideDAO.findAll());
+            Page<Ride> ridesPage = rideDAO.findAll(pageable);
+            return ResponseEntity.ok().body(ridesPage);
         } catch (InvalidAuthRequest iae) {
             logger.error("Failed to get rides posted data {}", iae.getMessage(), iae);
-            List<Ride> ridesWithoutPostedBy = rideService.getRidesWithoutPostedBy();
-            return ResponseEntity.ok().body(ridesWithoutPostedBy);
+            Page<Ride> ridesPage = rideDAO.findAll(pageable);
+            ridesPage.forEach(ride -> ride.setPostedBy(null));
+            return ResponseEntity.ok().body(ridesPage);
+
         } catch (Exception e) {
             logger.error("Failed to get rides {}", e.getMessage(), e);
             throw new RuntimeException(e);

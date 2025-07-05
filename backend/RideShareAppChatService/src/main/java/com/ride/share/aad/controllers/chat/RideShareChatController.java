@@ -1,8 +1,6 @@
 package com.ride.share.aad.controllers.chat;
 
-import com.ride.share.aad.storage.dao.UserDAO;
 import com.ride.share.aad.storage.dao.chat.ChatDAO;
-import com.ride.share.aad.storage.dao.chat.ChatMessageDAO;
 import com.ride.share.aad.storage.entity.User;
 import com.ride.share.aad.storage.entity.chat.Chat;
 import com.ride.share.aad.storage.entity.chat.ChatMessage;
@@ -52,7 +50,6 @@ public class RideShareChatController {
         return ResponseEntity.ok().body(chat);
     }
 
-
     @GetMapping("/conversations")
     @ResponseBody
     public ResponseEntity<List<Chat>> getAllChats(@RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
@@ -61,6 +58,4 @@ public class RideShareChatController {
         mergedList.addAll(user.getChatsWithUserID2());
         return ResponseEntity.ok().body(mergedList);
     }
-
-
 }

@@ -6,6 +6,8 @@ import com.ride.share.aad.storage.dao.UserDAO;
 import com.ride.share.aad.storage.entity.Token;
 import com.ride.share.aad.storage.entity.User;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ import java.util.UUID;
 
 @Service
 public class RequestAuthUtils {
+    private static final Logger logger = LoggerFactory.getLogger(RequestAuthUtils.class);
 
     @Autowired
     UserDAO userDAO;
@@ -46,7 +49,8 @@ public class RequestAuthUtils {
     public User getUser(String authorizationHeader) throws InvalidAuthRequest {
         Optional<Token> t = tokenDAO.findByJwtToken(authorizationHeader);
         if (t.isEmpty()) {
-            throw new InvalidAuthRequest("Invalid auth");
+            logger.error("Invalid token invalid auth found: {}", authorizationHeader);
+            throw new InvalidAuthRequest("Invalid auth expected: 1 found: "+ t);
         }
         t.get().getUser().setLastSeen(System.currentTimeMillis());
         userDAO.save(t.get().getUser());

@@ -37,6 +37,10 @@ public class RideService {
 
     public List<Ride> getRidesWithoutPostedBy() {
         List<Ride> ridesWithoutPostedBy = rideDAO.findAll();
+        return getRidesWithoutPostedBy(ridesWithoutPostedBy);
+    }
+
+    public static List<Ride> getRidesWithoutPostedBy(List<Ride> ridesWithoutPostedBy) {
         ridesWithoutPostedBy.forEach(ride -> ride.setPostedBy(null));
         return ridesWithoutPostedBy;
     }
