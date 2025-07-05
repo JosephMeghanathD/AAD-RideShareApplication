@@ -30,7 +30,7 @@ public class RequestAuthUtils {
 
     public Token login(JSONObject userLoginRequest, String role) throws InvalidAuthRequest {
         String userName = userLoginRequest.getString("username");
-        Optional<User> user = userDAO.findByName(userName);
+        Optional<User> user = userDAO.findByUserName(userName);
         if (user.isPresent() && user.get().validate(userLoginRequest.getString("password"))) {
             user.get().setLastSeen(System.currentTimeMillis());
             userDAO.save(user.get());

@@ -24,8 +24,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GenerateTempData implements CommandLineRunner {
 
     public static final boolean SAVE = true;
-    public static final int NO_OF_USERS = 10;
-    public static final int NO_OF_RIDES = 100;
+    public static final int NO_OF_USERS = 100;
+    public static final int NO_OF_RIDES = 1000;
     private static final boolean RESET_DATA = true;
     public static final int NUMBER_OF_MESSAGES = 40;
     public static final int NUMBER_OF_CHATS = 11;
@@ -66,8 +66,8 @@ public class GenerateTempData implements CommandLineRunner {
             resetData();
         }
         List<User> users = UserDataGenerator.generateUserData(NO_OF_USERS);
-        users.add(new User("wow", "wow", "wow@gmail.edu", "123", User.Role.Rider, GenerateTempData.getRandomTimestampInLastTwoDaysFrom()));
-        users.add(new User("wow1", "wow1", "wow@gmail.edu", "123", User.Role.Driver, GenerateTempData.getRandomTimestampInLastTwoDaysFrom()));
+        users.add(new User("wow", "TestUser1", "wow", "wow@gmail.edu", "123", User.Role.Rider, GenerateTempData.getRandomTimestampInLastTwoDaysFrom()));
+        users.add(new User("wow1", "TestUser2", "wow1", "wow@gmail.edu", "123", User.Role.Driver, GenerateTempData.getRandomTimestampInLastTwoDaysFrom()));
         System.out.println("Users:");
         for (User user : users) {
             System.out.println(user);
@@ -75,6 +75,7 @@ public class GenerateTempData implements CommandLineRunner {
                 userDAO.save(user);
             }
         }
+        userDAO.flush();
         List<Ride> rides = RideDataGenerator.generateRideData(SAVE ? userDAO.findAll() : users, NO_OF_RIDES);
         System.out.println("Rides:");
         for (Ride ride : rides) {
@@ -83,7 +84,7 @@ public class GenerateTempData implements CommandLineRunner {
                 rideDAO.save(ride);
             }
         }
-
+        rideDAO.flush();
         List<Chat> chats = ChatDataGenerator.generateRandomConversations(SAVE ? userDAO.findAll() : users, NUMBER_OF_CHATS, NUMBER_OF_MESSAGES);
         for (Chat chat : chats) {
             System.out.println(chat);
@@ -96,7 +97,7 @@ public class GenerateTempData implements CommandLineRunner {
                 }
             }
         }
-
+        chatDAO.flush();
         System.out.println("generated all data");
     }
 }

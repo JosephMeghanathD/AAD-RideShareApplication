@@ -28,7 +28,7 @@ public class Chat {
     }
 
     public Chat(User userID1, User userID2, List<ChatMessage> messages) {
-        this.chatId = getChatID(userID1.getName(), userID2.getName());
+        this.chatId = getChatID(userID1.getUserName(), userID2.getUserName());
         this.userID1 = userID1;
         this.userID2 = userID2;
         this.messages = messages;

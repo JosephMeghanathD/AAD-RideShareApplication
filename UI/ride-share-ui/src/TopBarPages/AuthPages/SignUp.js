@@ -4,7 +4,7 @@ import Spinner from '../../BasicElements/Spinner';
 import ErrorToast from '../../BasicElements/ErrorToast';
 
 const Signup = () => {
-  const [userId, setUserId] = useState('');
+  const [userName, setUserId] = useState('');
   const [name, setName] = useState('');
   const [emailId, setEmailId] = useState('');
   const [role, setRole] = useState('Rider');
@@ -21,14 +21,14 @@ const Signup = () => {
       setErrorMessage(null);
       try {
         const response = await axios.post('https://auth-service-1002278726079.us-central1.run.app/api/rs/public/signUp', {
-          userId,
+          userName,
           password,
           emailId,
           name,
           role
         });
         console.log(response);
-        window.location.href = "./login?username=" + userId;
+        window.location.href = "./login?username=" + userName;
       } catch (error) {
         console.error('Error fetching data:', error);
         setErrorMessage(error.response.data.body.detail);
@@ -44,7 +44,7 @@ const Signup = () => {
         <input
           type="text"
           placeholder="User ID"
-          value={userId}
+          value={userName}
           onChange={(e) => setUserId(e.target.value)}
         />
         <input

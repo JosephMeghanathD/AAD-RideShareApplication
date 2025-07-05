@@ -35,7 +35,7 @@ public class ChatService {
     }
 
     private Chat getChat(String toUserId, User user) throws Exception {
-        Optional<User> toUser = userDAO.findByName(toUserId);
+        Optional<User> toUser = userDAO.findByUserName(toUserId);
         if (toUser.isEmpty()) {
             throw new Exception("Invalid to user id");
         }

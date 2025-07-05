@@ -34,7 +34,7 @@ public class RideShareBasicController {
     @ResponseBody
     public String homeText(@RequestHeader(name = "Authorization", required = false) @DefaultValue("XXX") String authorizationHeader) throws InvalidAuthRequest {
         User user = requestAuthUtils.getUser(authorizationHeader);
-        return "This is RideShare Home, Welcome " + user.getName();
+        return "This is RideShare Home, Welcome " + user.getUserName();
     }
 
     @GetMapping("/public/home/text")

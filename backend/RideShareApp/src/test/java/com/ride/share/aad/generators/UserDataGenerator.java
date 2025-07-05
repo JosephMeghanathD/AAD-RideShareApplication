@@ -27,12 +27,13 @@ public class UserDataGenerator {
     private static User generateRandomUser() {
         String name = faker.name().fullName();
         String userId = generateUniqueUserId(name);
+        String userName = generateUniqueUserId(name);
         String emailId = generateEmailId(name);
         String password = faker.internet().password();
         User.Role role = faker.random().nextBoolean() ? User.Role.Rider : User.Role.Driver;
         long lastSeen = GenerateTempData.getRandomTimestampInLastTwoDaysFrom();
 
-        return new User(userId, name, emailId, password, role, lastSeen);
+        return new User(userId, userName, name, emailId, password, role, lastSeen);
     }
 
     private static String generateUniqueUserId(String name) {

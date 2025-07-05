@@ -36,6 +36,7 @@ public class User {
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(columnDefinition = "VARCHAR(36)")
     private String userId;
+    private String userName;
     private String name;
     private String emailId;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -47,8 +48,9 @@ public class User {
     public User() {
     }
 
-    public User(String userId, String name, String emailId, String password, Role role, long lastSeen) {
+    public User(String userId, String userName, String name, String emailId, String password, Role role, long lastSeen) {
         this.userId = userId;
+        this.userName = userName;
         this.name = name;
         this.emailId = emailId;
         this.password = password;
@@ -64,12 +66,12 @@ public class User {
         this.userId = userId;
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getEmailId() {
@@ -114,6 +116,14 @@ public class User {
 
     public List<Chat> getChatsWithUserID2() {
         return chatsWithUserID2;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public enum Role {

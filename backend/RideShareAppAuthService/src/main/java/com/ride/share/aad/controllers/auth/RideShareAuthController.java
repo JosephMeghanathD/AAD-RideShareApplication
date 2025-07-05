@@ -48,7 +48,7 @@ public class RideShareAuthController {
     @PostMapping("/public/signUp")
     @ResponseBody
     public ResponseEntity<User> signUp(@RequestBody User user) throws Exception {
-        userDAO.findByName(user.getName()).ifPresent(u -> {
+        userDAO.findByUserName(user.getUserName()).ifPresent(u -> {
             throw new RuntimeException("User name already taken");
         });
         userDAO.save(user);
