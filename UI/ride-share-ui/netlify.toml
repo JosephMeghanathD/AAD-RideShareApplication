@@ -1,6 +1,7 @@
 [build]
-    base = "UI/ride-share-ui"
-    command = "npm run start"
+    base    = "UI/ride-share-ui"
+    publish = "build"
+    command = "npm run build"
 
 [[plugins]]
     package = "netlify-plugin-cache-nextjs"
