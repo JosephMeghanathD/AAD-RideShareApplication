@@ -18,6 +18,7 @@ function App() {
       {/* The Routes component will render the correct Route based on the URL */}
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/login" element={<AuthExtraction />} />
