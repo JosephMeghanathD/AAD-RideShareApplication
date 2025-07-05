@@ -20,7 +20,7 @@ const Signup = () => {
     const signUpReq = async () => {
       setErrorMessage(null);
       try {
-        const response = await axios.post('http://localhost:8080/api/rs/public/signUp', {
+        const response = await axios.post('https://auth-service-1002278726079.us-central1.run.app/api/rs/public/signUp', {
           userId,
           password,
           emailId,

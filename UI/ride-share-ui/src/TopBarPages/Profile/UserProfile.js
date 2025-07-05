@@ -9,7 +9,7 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/rs/get/${localStorage.getItem("currentUser")}`, {
+        const response = await axios.get(`https://auth-service-1002278726079.us-central1.run.app/api/rs/get/${localStorage.getItem("currentUser")}`, {
           headers: {
             'Authorization': localStorage.getItem("jwtToken") || "XXX"
           },

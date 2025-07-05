@@ -16,7 +16,7 @@ const ChatBox = ({ chatID }) => {
   
       try {
         const response = await axios.get(
-          `http://localhost:8082/api/rs/chat/${chatID}`,
+          `https://chat-service-1002278726079.us-central1.run.app/api/rs/chat/${chatID}`,
           {
             headers: {
               'Authorization': localStorage.getItem("jwtToken") || "XXX",
@@ -51,7 +51,7 @@ const ChatBox = ({ chatID }) => {
   const sendMessage = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:8082/api/rs/chat/send/${chatID}`,
+        `https://chat-service-1002278726079.us-central1.run.app/api/rs/chat/send/${chatID}`,
         {message: messageText},
         {
           headers: {

@@ -20,7 +20,7 @@ const Login = () => {
     const loginReq = async () => {
       setErrorMessage(null);
       try {
-        const response = await axios.post('http://localhost:8080/api/rs/public/login', {
+        const response = await axios.post('https://auth-service-1002278726079.us-central1.run.app/api/rs/public/login', {
           username,
           password
         });

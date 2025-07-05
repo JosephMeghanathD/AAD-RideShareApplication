@@ -7,7 +7,7 @@ const RideListRow = ({ ride }) => {
 
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`http://localhost:8081/api/rs/ride/${ride.rideId}`, {
+      const response = await axios.delete(`https://ride-service-1002278726079.us-central1.run.app/api/rs/ride/${ride.rideId}`, {
         headers: {
           'Authorization': localStorage.getItem("jwtToken") || "XXX",
         },

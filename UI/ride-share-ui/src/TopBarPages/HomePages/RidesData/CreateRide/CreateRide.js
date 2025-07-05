@@ -24,7 +24,7 @@ const CreateRideForm = () => {
 
   const fetchRideData = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:8081/api/rs/ride/${id}`, {
+      const response = await axios.get(`https://ride-service-1002278726079.us-central1.run.app/api/rs/ride/${id}`, {
         headers: {
           'Authorization': localStorage.getItem("jwtToken") || "XXX",
           'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ const CreateRideForm = () => {
       };
       if (rideId) {
         // If rideId exists, it's an edit operation
-        const response = await axios.put(`http://localhost:8081/api/rs/ride/${rideId}`, rideDataWithTimestamp, {
+        const response = await axios.put(`https://ride-service-1002278726079.us-central1.run.app/api/rs/ride/${rideId}`, rideDataWithTimestamp, {
           headers: {
             'Authorization': localStorage.getItem("jwtToken") || "XXX",
             'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ const CreateRideForm = () => {
         console.log('Ride updated successfully:', response.data);
       } else {
         // Otherwise, it's a create operation
-        const response = await axios.post('http://localhost:8081/api/rs/ride/post', rideDataWithTimestamp, {
+        const response = await axios.post('https://ride-service-1002278726079.us-central1.run.app/api/rs/ride/post', rideDataWithTimestamp, {
           headers: {
             'Authorization': localStorage.getItem("jwtToken") || "XXX",
             'Content-Type': 'application/json',

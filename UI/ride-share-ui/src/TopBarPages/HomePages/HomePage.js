@@ -11,7 +11,7 @@ const HomePageText = () => {
     const fetchData = async () => {
       
       try {
-        const response = await axios.get('http://localhost:8080/api/rs/home/text', {
+        const response = await axios.get('https://auth-service-1002278726079.us-central1.run.app/api/rs/home/text', {
           headers: {
             'Authorization': localStorage.getItem("jwtToken")
           }
@@ -23,7 +23,7 @@ const HomePageText = () => {
         }
         try {
           setErrorMessage("You are viewing public data, login to unlock more features.")
-          const response = await axios.get('http://localhost:8080/api/rs/public/home/text');
+          const response = await axios.get('https://auth-service-1002278726079.us-central1.run.app/api/rs/public/home/text');
         setData(response.data);
         } catch {
           console.error('Error fetching data:', error);
