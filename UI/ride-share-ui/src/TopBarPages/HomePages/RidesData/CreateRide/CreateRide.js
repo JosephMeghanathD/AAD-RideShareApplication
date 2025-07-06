@@ -1,6 +1,36 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+const FormInput = ({
+  id,
+  name,
+  label,
+  type,
+  value,
+  onChange,
+  placeholder,
+  required = true,
+}) => (
+  <div className="mb-6">
+    <label
+      htmlFor={id}
+      className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+    >
+      {label}
+    </label>
+    <input
+      type={type}
+      id={id}
+      name={name}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      required={required}
+      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:color-scheme-dark"
+    />
+  </div>
+);
+
 const CreateRideForm = () => {
   const [rideData, setRideData] = useState({
     startingFromLocation: "",
@@ -94,38 +124,8 @@ const CreateRideForm = () => {
     }
   };
 
-  const FormInput = ({
-    id,
-    name,
-    label,
-    type,
-    value,
-    onChange,
-    placeholder,
-    required = true,
-  }) => (
-    <div className="mb-6">
-      <label
-        htmlFor={id}
-        className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
-      >
-        {label}
-      </label>
-      <input
-        type={type}
-        id={id}
-        name={name}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        required={required}
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:color-scheme-dark"
-      />
-    </div>
-  );
-
   return (
-    <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl">
+    <div className="max-w-2xl mx-auto my-10 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl">
       <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
         {rideId ? "Edit Your Ride" : "Create a New Ride"}
       </h2>
