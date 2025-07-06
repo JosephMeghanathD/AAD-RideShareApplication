@@ -1,23 +1,24 @@
 import { useEffect, useState } from 'react';
-import './RideList.css';
 import axios from 'axios';
 import { RideTable } from './RideListTable';
 
 const RideList = ({ forUser }) => {
   const [sortBy, setSortBy] = useState('postedAt');
   const [sortOrder, setSortOrder] = useState('asc');
-  const [currentPage, setCurrentPage] = useState(1); const [pageSize, setPageSize] = useState(15);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(15);
   const [error, setError] = useState(null);
   const [pageData, setPageData] = useState({ content: [], totalPages: 0, totalElements: 0 });
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
-      const calculatedSize = Math.floor(window.innerHeight / 50);
+      const calculatedSize = Math.floor(window.innerHeight / 60);
       setPageSize(Math.max(10, calculatedSize));
     };
 
-    handleResize(); window.addEventListener('resize', handleResize);
+    handleResize();
+    window.addEventListener('resize', handleResize);
 
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -35,14 +36,16 @@ const RideList = ({ forUser }) => {
       }
 
       const params = {
-        page: currentPage - 1, size: pageSize,
+        page: currentPage - 1,
+        size: pageSize,
         sortBy: sortBy,
         sortOrder: sortOrder,
       };
 
       try {
         const response = await axios.get(baseUrl, {
-          params, headers: {
+          params,
+          headers: {
             'Authorization': localStorage.getItem("jwtToken") || "XXX"
           }
         });
@@ -60,6 +63,7 @@ const RideList = ({ forUser }) => {
 
     fetchData();
   }, [forUser, currentPage, sortBy, sortOrder, pageSize]);
+
   const handleSort = (key) => {
     if (sortBy === key) {
       setSortOrder(prevOrder => (prevOrder === 'asc' ? 'desc' : 'asc'));
@@ -71,33 +75,21 @@ const RideList = ({ forUser }) => {
   };
 
   const handlePageChange = (pageNumber) => {
-    setError(null);
-    if (pageNumber > pageData.totalPages) {
-      setError('You are already on the last page!');
-      return;
+    if (pageNumber >= 1 && pageNumber <= pageData.totalPages) {
+      setCurrentPage(pageNumber);
     }
-    if (pageNumber < 1) {
-      setError('You are already on the first page!');
-      return;
-    }
-    setCurrentPage(pageNumber);
   };
-
-  const currentRides = pageData.content;
-  const totalRides = pageData.totalElements;
-
+  
   return (
     <RideTable
+      rides={pageData.content}
       handleSort={handleSort}
       sortBy={sortBy}
       sortOrder={sortOrder}
-      currentRides={currentRides}
       handlePageChange={handlePageChange}
       currentPage={currentPage}
-      totalRides={totalRides} 
-      totalPages={pageData.totalPages} 
+      totalPages={pageData.totalPages}
       error={error}
-      pageSize={pageSize}
       isLoading={isLoading}
     />
   );
