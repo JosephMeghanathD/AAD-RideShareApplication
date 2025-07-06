@@ -27,7 +27,7 @@
 
 .send-message-div {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	padding: 10px;
 }
 
@@ -67,4 +67,8 @@
     margin: 0px;
     display: block;
     color: gray;
+  }
+
+  .send-message-button {
+    width: 20%;
   }

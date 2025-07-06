@@ -1,13 +1,12 @@
-import './Conversations.css';
 import Conversation from './Conversation';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const Conversations = ({setChatID}) => {
+const Conversations = ({ setChatID, activeChatID }) => {
     const [data, setData] = useState([]);
+
     useEffect(() => {
         const fetchData = async () => {
-          
           try {
             const response = await axios.get('https://chat-service-1002278726079.us-central1.run.app/api/rs/chat/conversations', {
               headers: {
@@ -16,29 +15,44 @@ const Conversations = ({setChatID}) => {
             });
             setData(response.data);
           } catch (error) {
-            if (error.response.status === 401) {
+            if (error.response && error.response.status === 401) {
                 localStorage.removeItem("jwtToken");
-              }
+                // Optionally redirect to login page here
+            }
             console.error('Error fetching conversations:', error);
           }
         };
     
         fetchData();
-        const intervalId = setInterval(() => {
-          fetchData();
-        }, 5000);
+        const intervalId = setInterval(fetchData, 5000); // Fetch every 5 seconds
       
         // Clean up interval on component unmount
         return () => clearInterval(intervalId);
-      }, []);
+    }, []);
+
     return (
-		<div className="conversations-container">
-			{data.map((chatId) => (
-                <Conversation chat={chatId} currentUser={localStorage.getItem("currentUser")} setChatID={setChatID}/>
-            ))}
-		</div>
-	);
+        <div className="h-full flex flex-col">
+            {/* Header */}
+            <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Chats</h2>
+                {/* A search bar could be added here in the future */}
+            </div>
+            {/* Conversation List */}
+            <div className="flex-1 overflow-y-auto">
+                <div className="p-2 flex flex-col gap-1">
+                    {data.map((chat) => (
+                        <Conversation 
+                            key={chat.userID1.userName + chat.userID2.userName} 
+                            chat={chat} 
+                            currentUser={localStorage.getItem("currentUser")} 
+                            setChatID={setChatID}
+                            activeChatID={activeChatID}
+                        />
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
 }
 
 export default Conversations;
-

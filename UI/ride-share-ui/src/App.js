@@ -13,19 +13,20 @@ import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <div>
+    <div className="flex flex-col h-screen bg-gray-900">
       <NavBar />
-      {/* The Routes component will render the correct Route based on the URL */}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/contact" element={<ContactUs />} />
-        <Route path="/aboutus" element={<AboutUs />} />
-        <Route path="/login" element={<AuthExtraction />} />
-        <Route path="/chat" element={<Chat />} />
-        <Route path="/user" element={<UserProfile />} />
-        <Route path="/create-ride" element={<CreateRideForm />} />
-      </Routes>
+      <main className="flex-grow overflow-y-auto">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/aboutus" element={<AboutUs />} />
+          <Route path="/login" element={<AuthExtraction />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path="/user" element={<UserProfile />} />
+          <Route path="/create-ride" element={<CreateRideForm />} />
+        </Routes>
+      </main>
     </div>
   );
 }
