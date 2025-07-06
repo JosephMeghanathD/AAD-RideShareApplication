@@ -44,6 +44,7 @@ public class RideShareRideController {
     public ResponseEntity<Ride> postRide(@RequestBody Ride ride, @RequestHeader("Authorization") @DefaultValue("XXX") String authorizationHeader) throws Exception {
         User user = requestAuthUtils.getUser(authorizationHeader);
         ride.setPostedBy(user); // Set the user who posted the ride
+        ride.setPostedAt(System.currentTimeMillis());
         return ResponseEntity.ok().body(rideDAO.save(ride));
     }
 
@@ -63,7 +64,7 @@ public class RideShareRideController {
             if (!optionalRide.get().getPostedBy().getUserId().equals(user.getUserId())) {
                 throw new RuntimeException("You are not authorized to edit this ride");
             }
-            Ride savedRide = rideService.editRide(updatedRide, optionalRide);
+            Ride savedRide = rideService.editRide(updatedRide, optionalRide.get());
             return ResponseEntity.ok(savedRide);
         } else {
             return ResponseEntity.notFound().build();
