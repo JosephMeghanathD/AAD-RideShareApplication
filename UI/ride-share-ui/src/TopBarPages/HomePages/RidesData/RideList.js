@@ -1,14 +1,18 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { RideTable } from './RideListTable';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { RideTable } from "./RideListTable";
 
 const RideList = ({ forUser }) => {
-  const [sortBy, setSortBy] = useState('postedAt');
-  const [sortOrder, setSortOrder] = useState('asc');
+  const [sortBy, setSortBy] = useState("postedAt");
+  const [sortOrder, setSortOrder] = useState("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
   const [error, setError] = useState(null);
-  const [pageData, setPageData] = useState({ content: [], totalPages: 0, totalElements: 0 });
+  const [pageData, setPageData] = useState({
+    content: [],
+    totalPages: 0,
+    totalElements: 0,
+  });
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -18,10 +22,10 @@ const RideList = ({ forUser }) => {
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -30,9 +34,11 @@ const RideList = ({ forUser }) => {
       setIsLoading(true);
       setError(null);
 
-      let baseUrl = 'https://ride-service-1002278726079.us-central1.run.app/api/rs/ride/rides';
+      let baseUrl =
+        "https://ride-service-1002278726079.us-central1.run.app/api/rs/ride/rides";
       if (forUser) {
-        baseUrl = 'https://ride-service-1002278726079.us-central1.run.app/api/rs/ride/by/user';
+        baseUrl =
+          "https://ride-service-1002278726079.us-central1.run.app/api/rs/ride/by/user";
       }
 
       const params = {
@@ -46,16 +52,16 @@ const RideList = ({ forUser }) => {
         const response = await axios.get(baseUrl, {
           params,
           headers: {
-            'Authorization': localStorage.getItem("jwtToken") || "XXX"
-          }
+            Authorization: localStorage.getItem("jwtToken") || "XXX",
+          },
         });
         setPageData(response.data);
       } catch (error) {
         if (error.response?.status === 401) {
           localStorage.removeItem("jwtToken");
         }
-        setError('Error fetching rides data. Please try again later.');
-        console.error('Error fetching rides data:', error);
+        setError("Error fetching rides data. Please try again later.");
+        console.error("Error fetching rides data:", error);
       } finally {
         setIsLoading(false);
       }
@@ -66,10 +72,10 @@ const RideList = ({ forUser }) => {
 
   const handleSort = (key) => {
     if (sortBy === key) {
-      setSortOrder(prevOrder => (prevOrder === 'asc' ? 'desc' : 'asc'));
+      setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
     } else {
       setSortBy(key);
-      setSortOrder('asc');
+      setSortOrder("asc");
     }
     setCurrentPage(1);
   };
@@ -79,7 +85,7 @@ const RideList = ({ forUser }) => {
       setCurrentPage(pageNumber);
     }
   };
-  
+
   return (
     <RideTable
       rides={pageData.content}
