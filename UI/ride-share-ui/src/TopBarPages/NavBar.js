@@ -25,7 +25,7 @@ export default function NavBar() {
               to="/aboutus"
               className="text-gray-300 hover:text-blue-500 transition-colors"
             >
-              About Us
+              Meet The DEV
             </Link>
           </li>
           <li>
