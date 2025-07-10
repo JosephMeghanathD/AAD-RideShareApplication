@@ -12,22 +12,22 @@ import CreateRideForm from "./TopBarPages/HomePages/RidesData/CreateRide/CreateR
 
 import { Routes, Route } from "react-router-dom";
 
-// Loading screen component styled with Tailwind CSS for a dark theme
+// Loading screen component
 const LoadingScreen = () => (
   <div className="flex flex-col items-center justify-center h-screen w-full bg-gray-900">
-    {/* A more modern spinner */}
     <div className="w-12 h-12 rounded-full animate-spin
                     border-4 border-solid border-blue-500 border-t-transparent"></div>
-    <p className="mt-4 text-lg text-gray-300">Checking services...</p>
+    <p className="mt-4 text-lg text-gray-300">Connecting to services...</p>
+    <p className="mt-1 text-sm text-gray-500">(This may take a moment)</p>
   </div>
 );
 
-// Error screen component styled with Tailwind CSS for a dark theme
+// Error screen component
 const ErrorScreen = () => (
   <div className="flex items-center justify-center h-screen w-full bg-gray-900">
     <div className="p-8 text-center bg-gray-800 border border-red-500 rounded-lg shadow-xl">
        <p className="text-xl font-bold text-red-400">Services Unavailable</p>
-       <p className="mt-2 text-gray-300">Could not connect to one or more backend services. Please try again later.</p>
+       <p className="mt-2 text-gray-300">Could not connect to backend services after several attempts. Please try again later.</p>
     </div>
   </div>
 );
@@ -38,47 +38,73 @@ function App() {
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
-    // Function to perform health checks on all backend services
-    const checkServiceHealth = async () => {
-      const serviceUrls = [
-        'https://chat-service-1002278726079.us-central1.run.app/api/rs/health',
-        'https://ride-service-1002278726079.us-central1.run.app/api/rs/health',
-        'https://auth-service-1002278726079.us-central1.run.app/api/rs/health'
-      ];
+    let isMounted = true; // Flag to prevent state updates if the component unmounts
+    
+    const serviceUrls = [
+      'https://chat-service-1002278726079.us-central1.run.app/api/rs/health',
+      'https://ride-service-1002278726079.us-central1.run.app/api/rs/health',
+      'https://auth-service-1002278726079.us-central1.run.app/api/rs/health'
+    ];
+
+    const retryDelay = 500; // Wait 3 seconds between retries
+    const maxRetries = 15;   // Try a maximum of 10 times
+    let attemptCount = 0;
+
+    // This function will poll the services until they are all healthy
+    const pollServices = async () => {
+      attemptCount++;
+      console.log(`Attempt ${attemptCount}: Checking service health...`);
 
       try {
-        // Perform all fetch requests concurrently
         const responses = await Promise.all(
           serviceUrls.map(url => fetch(url))
         );
 
-        // Check if all responses have a 2xx status code (e.g., 200 OK)
         const allServicesOk = responses.every(res => res.ok);
 
         if (allServicesOk) {
-          setIsLoading(false); // All good, stop loading
+          console.log("All services are healthy. Application is starting.");
+          if (isMounted) {
+            setIsLoading(false); // SUCCESS: Stop loading and render the app
+          }
         } else {
-          // If any service fails (e.g., returns 503), throw an error
-          throw new Error('One or more services are not healthy.');
+          // If not all services are OK, it's a failure for this attempt
+          throw new Error('One or more services are not ready.');
         }
       } catch (error) {
-        console.error("Service health check failed:", error);
-        setIsError(true);      // Set the error state
-        setIsLoading(false); // Stop loading to show the error screen
+        console.warn(`Attempt ${attemptCount} failed: ${error.message}`);
+        
+        if (isMounted) {
+          if (attemptCount >= maxRetries) {
+            // If we've reached the max number of retries, give up
+            console.error("Max retries reached. Displaying error screen.");
+            setIsError(true);
+            setIsLoading(false);
+          } else {
+            // If we haven't maxed out, wait and try again
+            setTimeout(pollServices, retryDelay);
+          }
+        }
       }
     };
 
-    // Run the health check
-    checkServiceHealth();
-    
-  }, []); // The empty dependency array ensures this effect runs only once on mount
+    // Start the first attempt
+    pollServices();
 
-  // Render loading screen while checking services
+    // Cleanup function: This runs when the component unmounts.
+    // It prevents the polling from continuing in the background.
+    return () => {
+      isMounted = false;
+    };
+    
+  }, []); // Empty dependency array ensures this effect runs only once on mount
+
+  // Render loading screen while polling
   if (isLoading) {
     return <LoadingScreen />;
   }
 
-  // Render an error screen if any health check failed
+  // Render an error screen if polling failed after max retries
   if (isError) {
     return <ErrorScreen />;
   }
