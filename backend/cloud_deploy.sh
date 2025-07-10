@@ -22,6 +22,10 @@ if [ -z "$PROJECT_ID" ] || [ -z "$REGION" ]; then
   exit 1
 fi
 
+gcloud auth application-default set-quota-project $PROJECT_ID
+
+gcloud config set project $PROJECT_ID
+
 # --- Argument Parsing ---
 # Define the default list of services to deploy.
 SERVICES_TO_DEPLOY=("auth-service" "ride-service" "chat-service")

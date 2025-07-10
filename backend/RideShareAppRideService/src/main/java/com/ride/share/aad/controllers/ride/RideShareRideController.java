@@ -25,7 +25,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/rs/ride")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public class RideShareRideController {
 
     private static final Logger logger = LoggerFactory.getLogger(RideShareRideController.class);
